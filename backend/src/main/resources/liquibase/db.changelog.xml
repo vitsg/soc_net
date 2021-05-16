@@ -5,4 +5,38 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
+    <changeSet id="1.0.0" author="v.goncharenko">
+        <createTable tableName="account">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="birth_date" type="timestamp"/>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="1.0.1" author="v.goncharenko">
+        <insert tableName="account">
+            <column name="id" value="6f44a6fa-d013-4f0b-936c-e8c79ab27028"/>
+            <column name="first_name" value="admin"/>
+            <column name="last_name" value="admin"/>
+            <column name="email" value="arteevata93@gmail.com"/>
+            <column name="password" value="$2a$10$Usd82tMreV0HVpBEgN4U6Oo8Ft0HChco9j4lB8MR8TOwjblTzqCqS"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
