@@ -1,6 +1,5 @@
 package com.homework.social_network.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.homework.social_network.enums.UserRole;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

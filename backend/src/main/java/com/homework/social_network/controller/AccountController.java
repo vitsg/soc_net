@@ -1,9 +1,7 @@
 package com.homework.social_network.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.homework.social_network.dto.AccountDto;
 import com.homework.social_network.entity.Account;
-import com.homework.social_network.enums.UserRole;
 import com.homework.social_network.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
-import static com.homework.social_network.service.Converter.convert;
-
 @RestController
 @RequestMapping("api/account")
 public class AccountController {
@@ -25,10 +19,8 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/registration")
-    public AccountDto registration(@RequestBody Map<String, Object> newAccount) {
-        Account account = new ObjectMapper().convertValue(newAccount, Account.class);
-        account.setRole(UserRole.USER);
-        return convert(accountService.registration(account));
+    public AccountDto registration(@RequestBody Account account) {
+        return accountService.registration(account);
     }
 
     @GetMapping("/{id}")
