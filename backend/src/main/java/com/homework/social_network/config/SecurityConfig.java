@@ -1,4 +1,4 @@
-package com.homework.social_network.security;
+package com.homework.social_network.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.homework.social_network.service.AuthService;
