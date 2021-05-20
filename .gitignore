@@ -35,3 +35,4 @@ build/
 home_work
 .mvn
 mvnw*
+/backend/src/main/resources/static/**
