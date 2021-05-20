@@ -4,6 +4,7 @@ import com.homework.social_network.dto.AccountDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.enums.UserRole;
 import com.homework.social_network.repo.AccountRepository;
+import com.homework.social_network.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,9 @@ public class AccountService {
 
     public AccountDto registration(Account account) {
         account.setRole(UserRole.USER);
-        return convert(accountRepository.save(account));
+        Account savedAccount = accountRepository.save(account);
+        Utils.setPrincipal(savedAccount);
+        return convert(savedAccount);
     }
 
     public Account findOne(String id) {
