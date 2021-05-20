@@ -21,7 +21,6 @@ public class AccountService {
     public AccountDto registration(Account account) {
         account.setRole(UserRole.USER);
         Account savedAccount = accountRepository.save(account);
-        Utils.setPrincipal(savedAccount);
         return convert(savedAccount);
     }
 
