@@ -47,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .println(new ObjectMapper().writeValueAsString(data));
                 })
                 .and()
+                .logout().logoutUrl("/api/logout")
+                .and()
                 .authorizeRequests()
                 .antMatchers("/api/login", "/api/account/registration").permitAll()
                 .antMatchers("/api/**").authenticated()
