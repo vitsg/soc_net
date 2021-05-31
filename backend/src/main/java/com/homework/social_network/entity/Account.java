@@ -1,5 +1,6 @@
 package com.homework.social_network.entity;
 
+import com.homework.social_network.enums.Sex;
 import com.homework.social_network.enums.UserRole;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,6 +37,26 @@ public class Account extends BaseEntity implements UserDetails {
     @Column(name = "role")
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
+
+    @Column(name = "sex")
+    @Enumerated(value = EnumType.STRING)
+    private Sex sex;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "family_status")
+    private String familyStatus;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "employment")
+    private String employment;
+
+    @Column(name = "description")
+    private String description;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

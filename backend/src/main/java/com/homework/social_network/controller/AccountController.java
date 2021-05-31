@@ -1,6 +1,8 @@
 package com.homework.social_network.controller;
 
-import com.homework.social_network.dto.AccountDto;
+import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
+import com.homework.social_network.dto.request.AccountUpdateRequestDto;
+import com.homework.social_network.dto.response.AccountResponseDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,17 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/registration")
-    public AccountDto registration(@RequestBody Account account) {
-        return accountService.registration(account);
+    public AccountResponseDto registration(@RequestBody AccountRegistrationRequestDto accountRegistrationRequestDto) {
+        return accountService.registration(accountRegistrationRequestDto);
     }
 
     @GetMapping("/{id}")
-    public Account findOne(@PathVariable String id) {
+    public AccountResponseDto findOne(@PathVariable String id) {
         return accountService.findOne(id);
+    }
+
+    @PostMapping
+    public AccountResponseDto update(@RequestBody AccountUpdateRequestDto accountUpdateRequestDto) {
+        return accountService.update(accountUpdateRequestDto);
     }
 }

@@ -1,9 +1,11 @@
 package com.homework.social_network.service;
 
-import com.homework.social_network.dto.CurrentStatusDto;
+import com.homework.social_network.dto.response.AccountResponseDto;
+import com.homework.social_network.dto.response.CurrentStatusDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.enums.Access;
 import com.homework.social_network.repo.AccountRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class AuthService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     public Account findByEmail(String email) {
         Account account = accountRepository.findByEmail(email);
@@ -43,7 +48,7 @@ public class AuthService {
 
     private CurrentStatusDto createCurrentStatusDto(Account account, List<Access> accesses) {
         CurrentStatusDto currentStatusDto = new CurrentStatusDto();
-        currentStatusDto.setCurrentAccount(convert(account));
+        currentStatusDto.setCurrentAccount(modelMapper.map(account, AccountResponseDto.class));
         currentStatusDto.setAccesses(accesses);
         return currentStatusDto;
     }

@@ -3,6 +3,7 @@ package com.homework.social_network.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.homework.social_network.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -31,6 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("#{'${spring.security.allow.urls}'.split(',')}")
+    private List<String> allowUrls;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -58,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         httpServletResponse.setStatus(HttpStatus.OK.value()))
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/login", "/api/account/registration").permitAll()
+                .antMatchers(allowUrls.toArray(new String[allowUrls.size()])).permitAll()
                 .antMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
                 .and()

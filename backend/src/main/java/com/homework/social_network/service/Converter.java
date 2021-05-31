@@ -1,18 +1,18 @@
 package com.homework.social_network.service;
 
-import com.homework.social_network.dto.AccountDto;
+import com.homework.social_network.dto.response.AccountResponseDto;
 import com.homework.social_network.entity.Account;
 
 public class Converter {
 
-    public static AccountDto convert(Account account) {
-        AccountDto accountDto = new AccountDto();
-        accountDto.setId(account.getId());
-        accountDto.setFirstName(account.getFirstName());
-        accountDto.setLastName(account.getLastName());
-        accountDto.setEmail(account.getEmail());
-        accountDto.setRole(account.getRole());
-        accountDto.setBirthDate(account.getBirthDate());
-        return accountDto;
+    public static AccountResponseDto convert(Account account) {
+        AccountResponseDto accountResponseDto = new AccountResponseDto();
+        accountResponseDto.setId(account.getId());
+        accountResponseDto.setFirstName(account.getFirstName());
+        accountResponseDto.setLastName(account.getLastName());
+        accountResponseDto.setEmail(account.getEmail());
+        accountResponseDto.setRole(account.getRole());
+        accountResponseDto.setBirthDate(account.getBirthDate());
+        return accountResponseDto;
     }
 }

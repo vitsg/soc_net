@@ -1,6 +1,6 @@
 package com.homework.social_network.controller;
 
-import com.homework.social_network.dto.CurrentStatusDto;
+import com.homework.social_network.dto.response.CurrentStatusDto;
 import com.homework.social_network.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
