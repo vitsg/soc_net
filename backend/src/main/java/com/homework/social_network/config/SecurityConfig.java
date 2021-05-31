@@ -40,6 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().disable()
+                .cors()
+                .and()
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint((httpServletRequest, httpServletResponse, e) ->
                 httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value())).and()
