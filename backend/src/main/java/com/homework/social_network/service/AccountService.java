@@ -2,10 +2,12 @@ package com.homework.social_network.service;
 
 import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
+import com.homework.social_network.dto.request.PhotoRequestDto;
 import com.homework.social_network.dto.response.AccountResponseDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.enums.UserRole;
 import com.homework.social_network.repo.AccountRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class AccountService {
 
     @Autowired
@@ -36,8 +39,9 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountResponseDto findOne(String id) {
-        return modelMapper.map(accountRepository.getById(UUID.fromString(id)), AccountResponseDto.class);
+    public AccountResponseDto findOne(String id, boolean withPhoto) {
+        Account account = accountRepository.getById(UUID.fromString(id));
+        return modelMapper.map(account, AccountResponseDto.class);
     }
 
     @Transactional
@@ -45,5 +49,16 @@ public class AccountService {
         Account account = accountRepository.getById(accountUpdateRequestDto.getId());
         modelMapper.map(accountUpdateRequestDto, account);
         return modelMapper.map(accountRepository.save(account), AccountResponseDto.class);
+    }
+
+    @Transactional
+    public void changePhoto(PhotoRequestDto photoRequestDto) {
+        Account account = accountRepository.getById(photoRequestDto.getUserId());
+        try {
+            account.setPhoto(photoRequestDto.getPhoto() == null ? null : photoRequestDto.getPhoto().getBytes());
+        } catch (Exception e) {
+            log.error("Error by set photo", e);
+            throw new RuntimeException("Error by set photo", e);
+        }
     }
 }

@@ -1,16 +1,24 @@
 package com.homework.social_network.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.homework.social_network.enums.Sex;
 import com.homework.social_network.enums.UserRole;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Lob;
+import javax.xml.bind.annotation.XmlTransient;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,6 +65,9 @@ public class Account extends BaseEntity implements UserDetails {
     @Column(name = "description")
     private String description;
 
+    @Lob
+    @Column(name = "photo")
+    private byte[] photo;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

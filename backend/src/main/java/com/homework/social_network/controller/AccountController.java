@@ -2,11 +2,12 @@ package com.homework.social_network.controller;
 
 import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
+import com.homework.social_network.dto.request.PhotoRequestDto;
 import com.homework.social_network.dto.response.AccountResponseDto;
-import com.homework.social_network.entity.Account;
 import com.homework.social_network.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,11 +28,16 @@ public class AccountController {
 
     @GetMapping("/{id}")
     public AccountResponseDto findOne(@PathVariable String id) {
-        return accountService.findOne(id);
+        return accountService.findOne(id, true);
     }
 
     @PostMapping
     public AccountResponseDto update(@RequestBody AccountUpdateRequestDto accountUpdateRequestDto) {
         return accountService.update(accountUpdateRequestDto);
+    }
+
+    @PostMapping("/changePhoto")
+    public void changeDefaultPhoto(@ModelAttribute PhotoRequestDto photoRequestDto) {
+
     }
 }
