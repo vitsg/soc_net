@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("api/account")
 public class AccountController {
@@ -36,8 +38,13 @@ public class AccountController {
         return accountService.update(accountUpdateRequestDto);
     }
 
-    @PostMapping("/changePhoto")
-    public void changeDefaultPhoto(@ModelAttribute PhotoRequestDto photoRequestDto) {
+    @PostMapping("/{id}/change-photo")
+    public void changeDefaultPhoto(@PathVariable UUID id, @ModelAttribute PhotoRequestDto photoRequestDto) {
+        accountService.changePhoto(id, photoRequestDto);
+    }
 
+    @GetMapping("/{id}/photo")
+    public byte[] getAccountPhoto(@PathVariable UUID id) {
+        return accountService.getAccountPhoto(id);
     }
 }

@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.homework.social_network.utils.Utils.getDefaultImage;
+
 @Service
 @Slf4j
 public class AccountService {
@@ -52,13 +54,24 @@ public class AccountService {
     }
 
     @Transactional
-    public void changePhoto(PhotoRequestDto photoRequestDto) {
-        Account account = accountRepository.getById(photoRequestDto.getUserId());
+    public void changePhoto(UUID id, PhotoRequestDto photoRequestDto) {
+        Account account = accountRepository.getById(id);
         try {
             account.setPhoto(photoRequestDto.getPhoto() == null ? null : photoRequestDto.getPhoto().getBytes());
         } catch (Exception e) {
             log.error("Error by set photo", e);
             throw new RuntimeException("Error by set photo", e);
+        }
+    }
+
+    @Transactional
+    public byte[] getAccountPhoto(UUID id) {
+        Account account = accountRepository.getById(id);
+        byte[] photo = account.getPhoto();
+        if (photo == null || photo.length == 0) {
+            return getDefaultImage();
+        } else {
+            return photo;
         }
     }
 }

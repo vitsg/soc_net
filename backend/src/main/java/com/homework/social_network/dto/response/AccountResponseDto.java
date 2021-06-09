@@ -22,5 +22,4 @@ public class AccountResponseDto {
     private String phone;
     private String employment;
     private String description;
-    private byte[] photo;
 }
