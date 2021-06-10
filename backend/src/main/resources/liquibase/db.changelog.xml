@@ -54,5 +54,33 @@
             <column name="photo" type="BLOB"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1623349014764-3" author="vitsg (generated)">
+        <createTable tableName="photo">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_PHOTO"/>
+            </column>
+            <column name="onwer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data" type="BLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="main" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1623349014764-4" author="vitsg (generated)">
+        <addColumn tableName="account">
+            <column name="photo_id" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1623349014764-5" author="vitsg (generated)">
+        <addForeignKeyConstraint baseColumnNames="photo_id" baseTableName="account" constraintName="FK_ACCOUNT_ON_PHOTO"
+                                 referencedColumnNames="id" referencedTableName="photo"/>
+    </changeSet>
+    <changeSet id="1623349014764-6" author="vitsg (generated)">
+        <dropColumn columnName="photo" tableName="account"/>
+    </changeSet>
 
 </databaseChangeLog>

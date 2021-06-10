@@ -12,12 +12,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlTransient;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -27,22 +30,22 @@ import java.util.Collections;
 @Data
 public class Account extends BaseEntity implements UserDetails {
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "role")
+    @Column(name = "role", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
@@ -65,9 +68,9 @@ public class Account extends BaseEntity implements UserDetails {
     @Column(name = "description")
     private String description;
 
-    @Lob
-    @Column(name = "photo")
-    private byte[] photo;
+    @JoinColumn(name = "photo_id")
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
+    private Photo photo;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
