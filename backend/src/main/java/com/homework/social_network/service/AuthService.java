@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,13 @@ public class AuthService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Transactional
     public Account findByEmail(String email) {
         Account account = accountRepository.findByEmail(email);
         if (account == null) {
             throw new RuntimeException("Account with email " + email + " not found");
         }
-        return accountRepository.findByEmail(email);
+        return account;
     }
 
     public CurrentStatusDto getCurrentStatusDto() {
