@@ -82,5 +82,12 @@
     <changeSet id="1623349014764-6" author="vitsg (generated)">
         <dropColumn columnName="photo" tableName="account"/>
     </changeSet>
+    <changeSet id="1624300533634-3" author="vitsg (generated)">
+        <addColumn tableName="photo">
+            <column name="create_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

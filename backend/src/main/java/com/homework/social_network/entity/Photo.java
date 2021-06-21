@@ -6,6 +6,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -21,4 +22,7 @@ public class Photo extends BaseEntity {
 
     @Column(name = "main", nullable = false)
     private boolean main;
+
+    @Column(name = "create_date", nullable = false)
+    private LocalDateTime createDate;
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -77,10 +78,13 @@ public class AccountService {
 
     private void addOrChangePhoto(MultipartFile photoFile, Account account) {
         try {
+            Photo forRemove = account.getPhoto();
+            Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
             Photo photo = new Photo();
             photo.setOwnerId(account.getId());
             photo.setMain(true);
             photo.setData(photoFile.getBytes());
+            photo.setCreateDate(LocalDateTime.now());
             account.setPhoto(photo);
         } catch (Exception e) {
             log.error("Error by set photo", e);
@@ -90,6 +94,8 @@ public class AccountService {
 
     private void removePhoto(Account account) {
         account.setPhoto(null);
+        Photo forRemove = account.getPhoto();
+        Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
     }
 
     @Transactional
