@@ -28,6 +28,11 @@ public class PhotoService {
 
     @Transactional
     public void addPhotos(UUID id, List<MultipartFile> photos) {
+        if (photos == null) {
+            log.info("List of photos is null");
+            return;
+        }
+        log.info("Photos size is {}", photos.size());
         photos.forEach(p -> {
             try {
                 Photo photo = new Photo();
