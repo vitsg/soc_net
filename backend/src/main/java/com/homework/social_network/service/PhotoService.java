@@ -7,9 +7,6 @@ import com.homework.social_network.repo.PhotoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,8 +47,7 @@ public class PhotoService {
 
     @Transactional
     public PhotosResponseDto getPhotos(UUID id, int start, int end) {
-        Pageable pageable = PageRequest.of(start, end, Sort.by(Sort.Direction.DESC, "createDate"));
-        List<PhotoResponseDto> photos = photoRepository.getByOwnerIdAndMainIsFalse(id, pageable)
+        List<PhotoResponseDto> photos = photoRepository.getByOwnerIdAndMainIsFalse(id, start, end - start)
                 .stream()
                 .map(p -> modelMapper.map(p, PhotoResponseDto.class))
                 .collect(Collectors.toList());
