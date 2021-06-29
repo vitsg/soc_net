@@ -36,7 +36,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public GroupResponseDto update(@RequestBody GroupUpdateRequestDto groupUpdateRequestDto) {
+    public GroupResponseDto update(@ModelAttribute GroupUpdateRequestDto groupUpdateRequestDto) {
         return groupService.update(groupUpdateRequestDto);
     }
 
