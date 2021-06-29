@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -35,4 +36,7 @@ public class Group extends BaseEntity {
     @JoinColumn(name = "photo_id")
     @OneToOne(cascade = CascadeType.ALL)
     private Photo photo;
+
+    @Column(name = "create_date", nullable = false)
+    private LocalDateTime createDate;
 }

@@ -4,6 +4,9 @@ import com.homework.social_network.dto.request.GroupUpdateRequestDto;
 import com.homework.social_network.dto.request.GroupCreateRequestDto;
 import com.homework.social_network.dto.response.GroupPageInfoResponseDto;
 import com.homework.social_network.dto.response.GroupResponseDto;
+import com.homework.social_network.dto.response.GroupsResponseDto;
+import com.homework.social_network.dto.response.PhotoResponseDto;
+import com.homework.social_network.dto.response.PhotosResponseDto;
 import com.homework.social_network.entity.Group;
 import com.homework.social_network.entity.Photo;
 import com.homework.social_network.repo.GroupRepository;
@@ -16,8 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.homework.social_network.utils.Utils.getDefaultImage;
 
@@ -37,6 +42,7 @@ public class GroupService {
     @Transactional
     public GroupResponseDto create(GroupCreateRequestDto groupCreateRequestDto) {
         Group group = modelMapper.map(groupCreateRequestDto, Group.class);
+        group.setCreateDate(LocalDateTime.now());
         Group savedGroup = groupRepository.save(group);
         setPhoto(savedGroup, groupCreateRequestDto.getPhoto());
         return modelMapper.map(savedGroup, GroupResponseDto.class);
@@ -106,5 +112,16 @@ public class GroupService {
         GroupPageInfoResponseDto groupPageInfoResponseDto = new GroupPageInfoResponseDto();
         groupPageInfoResponseDto.setGroup(modelMapper.map(group, GroupResponseDto.class));
         return groupPageInfoResponseDto;
+    }
+
+    public GroupsResponseDto getAllGroups(int start, int end) {
+        List<GroupResponseDto> groups = groupRepository.getAllGroups(start, end - start)
+                .stream()
+                .map(p -> modelMapper.map(p, GroupResponseDto.class))
+                .collect(Collectors.toList());
+        GroupsResponseDto groupsResponseDto = new GroupsResponseDto();
+        groupsResponseDto.setGroups(groups);
+        groupsResponseDto.setTotalSize((int) photoRepository.count());
+        return groupsResponseDto;
     }
 }

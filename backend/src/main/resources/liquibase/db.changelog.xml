@@ -109,5 +109,12 @@
         <addForeignKeyConstraint baseColumnNames="photo_id" baseTableName="sn_group" constraintName="FK_GROUP_ON_PHOTO"
                                  referencedColumnNames="id" referencedTableName="photo"/>
     </changeSet>
+    <changeSet id="1624997825882-3" author="vitsg (generated)">
+        <addColumn tableName="sn_group">
+            <column name="create_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

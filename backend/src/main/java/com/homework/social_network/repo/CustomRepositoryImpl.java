@@ -14,7 +14,7 @@ public class CustomRepositoryImpl implements CustomRepository{
 
     @Override
     public List<Photo> getByOwnerIdAndMainIsFalse(UUID ownerId, int start, int limit) {
-        return entityManager.createQuery("select p from Photo p where p.ownerId = :ownerId and p.main = false order by p.createDate", Photo.class)
+        return entityManager.createQuery("select p from Photo p where p.ownerId = :ownerId and p.main = false order by p.createDate desc", Photo.class)
                 .setFirstResult(start)
                 .setMaxResults(limit)
                 .setParameter("ownerId", ownerId)
