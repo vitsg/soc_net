@@ -4,7 +4,7 @@ import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
 import com.homework.social_network.dto.response.AccountResponseDto;
-import com.homework.social_network.dto.response.PageInfoResponseDto;
+import com.homework.social_network.dto.response.AccountPageInfoResponseDto;
 import com.homework.social_network.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +40,7 @@ public class AccountController {
     }
 
     @PostMapping("/{id}/change-photo")
-    public PageInfoResponseDto changeDefaultPhoto(@PathVariable UUID id, @ModelAttribute PhotoRequestDto photoRequestDto) {
+    public AccountPageInfoResponseDto changeDefaultPhoto(@PathVariable UUID id, @ModelAttribute PhotoRequestDto photoRequestDto) {
         return accountService.changePhoto(id, photoRequestDto);
     }
 
@@ -50,7 +50,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}/page-info")
-    public PageInfoResponseDto getPageInfo(@PathVariable UUID id) {
+    public AccountPageInfoResponseDto getPageInfo(@PathVariable UUID id) {
         return accountService.getPageInfo(id);
     }
 }

@@ -5,7 +5,7 @@ import com.homework.social_network.dto.request.AccountUpdateRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
 import com.homework.social_network.dto.response.AccountResponseDto;
 import com.homework.social_network.dto.response.PageInfoAccessResponseDto;
-import com.homework.social_network.dto.response.PageInfoResponseDto;
+import com.homework.social_network.dto.response.AccountPageInfoResponseDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.Photo;
 import com.homework.social_network.enums.UserRole;
@@ -64,7 +64,7 @@ public class AccountService {
     }
 
     @Transactional
-    public PageInfoResponseDto changePhoto(UUID id, PhotoRequestDto photoRequestDto) {
+    public AccountPageInfoResponseDto changePhoto(UUID id, PhotoRequestDto photoRequestDto) {
         MultipartFile photoFile = photoRequestDto.getPhoto();
         Account account = accountRepository.getById(id);
         if (photoFile == null || photoFile.getSize() == 0) {
@@ -109,18 +109,18 @@ public class AccountService {
     }
 
     @Transactional
-    public PageInfoResponseDto getPageInfo(UUID id) {
+    public AccountPageInfoResponseDto getPageInfo(UUID id) {
         Account account = accountRepository.getById(id);
         return createPageInfo(account);
     }
 
-    private PageInfoResponseDto createPageInfo(Account account) {
-        PageInfoResponseDto pageInfoResponseDto = new PageInfoResponseDto();
-        pageInfoResponseDto.setAccount(modelMapper.map(account, AccountResponseDto.class));
+    private AccountPageInfoResponseDto createPageInfo(Account account) {
+        AccountPageInfoResponseDto accountPageInfoResponseDto = new AccountPageInfoResponseDto();
+        accountPageInfoResponseDto.setAccount(modelMapper.map(account, AccountResponseDto.class));
         PageInfoAccessResponseDto pageInfoAccessResponseDto = new PageInfoAccessResponseDto();
         pageInfoAccessResponseDto.setCanChangePhoto(true);
         Optional.ofNullable(account.getPhoto()).ifPresent(p -> pageInfoAccessResponseDto.setCanRemovePhoto(true));
-        pageInfoResponseDto.setAccesses(pageInfoAccessResponseDto);
-        return pageInfoResponseDto;
+        accountPageInfoResponseDto.setAccesses(pageInfoAccessResponseDto);
+        return accountPageInfoResponseDto;
     }
 }
