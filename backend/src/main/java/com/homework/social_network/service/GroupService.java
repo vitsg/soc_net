@@ -114,6 +114,7 @@ public class GroupService {
         return groupPageInfoResponseDto;
     }
 
+    @Transactional
     public GroupsResponseDto getAllGroups(int start, int end) {
         List<GroupResponseDto> groups = groupRepository.getAllGroups(start, end - start)
                 .stream()
