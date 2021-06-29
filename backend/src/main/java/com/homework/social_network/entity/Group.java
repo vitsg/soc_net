@@ -7,9 +7,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Data
+@Table(name = "sn_group")
 public class Group extends BaseEntity {
 
     @Column(name = "name", nullable = false)

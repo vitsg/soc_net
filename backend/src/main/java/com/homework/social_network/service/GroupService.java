@@ -1,6 +1,5 @@
 package com.homework.social_network.service;
 
-import com.homework.social_network.dto.request.GroupRegistrationRequestDto;
 import com.homework.social_network.dto.request.GroupUpdateRequestDto;
 import com.homework.social_network.dto.request.GroupCreateRequestDto;
 import com.homework.social_network.dto.response.GroupPageInfoResponseDto;
@@ -38,8 +37,8 @@ public class GroupService {
     @Transactional
     public GroupResponseDto create(GroupCreateRequestDto groupCreateRequestDto) {
         Group group = modelMapper.map(groupCreateRequestDto, Group.class);
-        setPhoto(group, groupCreateRequestDto.getPhoto());
         Group savedGroup = groupRepository.save(group);
+        setPhoto(savedGroup, groupCreateRequestDto.getPhoto());
         return modelMapper.map(savedGroup, GroupResponseDto.class);
     }
 

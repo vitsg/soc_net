@@ -89,5 +89,25 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="1624995603376-3" author="vitsg (generated)">
+        <createTable tableName="sn_group">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GROUP"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="theme" type="VARCHAR(255)"/>
+            <column name="own_theme" type="VARCHAR(255)"/>
+            <column name="sub_theme" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="photo_name" type="VARCHAR(255)"/>
+            <column name="photo_id" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1624995603376-4" author="vitsg (generated)">
+        <addForeignKeyConstraint baseColumnNames="photo_id" baseTableName="sn_group" constraintName="FK_GROUP_ON_PHOTO"
+                                 referencedColumnNames="id" referencedTableName="photo"/>
+    </changeSet>
 
 </databaseChangeLog>
