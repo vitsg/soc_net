@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -34,9 +35,6 @@ public class Group extends BaseEntity {
     private String photoName;
 
     @JoinColumn(name = "photo_id")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Photo photo;
-
-    @Column(name = "create_date", nullable = false)
-    private LocalDateTime createDate;
 }

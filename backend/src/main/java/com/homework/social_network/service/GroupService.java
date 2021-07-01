@@ -1,12 +1,10 @@
 package com.homework.social_network.service;
 
-import com.homework.social_network.dto.request.GroupUpdateRequestDto;
 import com.homework.social_network.dto.request.GroupCreateRequestDto;
+import com.homework.social_network.dto.request.GroupUpdateRequestDto;
 import com.homework.social_network.dto.response.GroupPageInfoResponseDto;
-import com.homework.social_network.dto.response.GroupResponseDto;
+import com.homework.social_network.dto.response.GroupWithPhotoResponseDto;
 import com.homework.social_network.dto.response.GroupsResponseDto;
-import com.homework.social_network.dto.response.PhotoResponseDto;
-import com.homework.social_network.dto.response.PhotosResponseDto;
 import com.homework.social_network.entity.Group;
 import com.homework.social_network.entity.Photo;
 import com.homework.social_network.repo.GroupRepository;
@@ -24,7 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.homework.social_network.utils.Utils.getDefaultImage;
+import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
 
 @Service
 @Slf4j
@@ -40,42 +38,47 @@ public class GroupService {
     private ModelMapper modelMapper;
 
     @Transactional
-    public GroupResponseDto create(GroupCreateRequestDto groupCreateRequestDto) {
+    public GroupWithPhotoResponseDto create(GroupCreateRequestDto groupCreateRequestDto) {
         Group group = modelMapper.map(groupCreateRequestDto, Group.class);
         group.setCreateDate(LocalDateTime.now());
         Group savedGroup = groupRepository.save(group);
         setPhoto(savedGroup, groupCreateRequestDto.getPhoto());
-        return modelMapper.map(savedGroup, GroupResponseDto.class);
+        GroupWithPhotoResponseDto dto = modelMapper.map(savedGroup, GroupWithPhotoResponseDto.class);
+        dto.setPhoto(getOrDefaultContentPhoto(savedGroup.getPhoto()));
+        return dto;
     }
 
     @Transactional
-    public GroupResponseDto findOne(String id) {
-        Group group = groupRepository.getById(UUID.fromString(id));
-        return modelMapper.map(group, GroupResponseDto.class);
+    public GroupWithPhotoResponseDto findOne(String id) {
+        Group group = groupRepository.getByIdWithPhoto(UUID.fromString(id));
+        GroupWithPhotoResponseDto dto = modelMapper.map(group, GroupWithPhotoResponseDto.class);
+        dto.setPhoto(getOrDefaultContentPhoto(group.getPhoto()));
+        return dto;
     }
 
     @Transactional
-    public GroupResponseDto update(GroupUpdateRequestDto groupUpdateRequestDto) {
-        Group group = groupRepository.getById(groupUpdateRequestDto.getId());
+    public GroupWithPhotoResponseDto update(GroupUpdateRequestDto groupUpdateRequestDto) {
+        Group group = groupRepository.getByIdWithPhoto(groupUpdateRequestDto.getId());
         modelMapper.map(groupUpdateRequestDto, group);
         setPhoto(group, groupUpdateRequestDto.getPhoto());
-        return modelMapper.map(groupRepository.save(group), GroupResponseDto.class);
-    }
-
-    @Transactional
-    public byte[] getGroupPhoto(UUID id) {
-        Photo photo = photoRepository.getByOwnerIdAndMainIsTrue(id);
-        if (photo == null) {
-            return getDefaultImage();
-        } else {
-            return photo.getData();
-        }
+        Group savedGroup = groupRepository.save(group);
+        GroupWithPhotoResponseDto dto = modelMapper.map(savedGroup, GroupWithPhotoResponseDto.class);
+        dto.setPhoto(getOrDefaultContentPhoto(savedGroup.getPhoto()));
+        return dto;
     }
 
     @Transactional
     public GroupPageInfoResponseDto getPageInfo(UUID id) {
-        Group group = groupRepository.getById(id);
+        Group group = groupRepository.getByIdWithPhoto(id);
         return createPageInfo(group);
+    }
+
+    private GroupPageInfoResponseDto createPageInfo(Group group) {
+        GroupPageInfoResponseDto groupPageInfoResponseDto = new GroupPageInfoResponseDto();
+        GroupWithPhotoResponseDto dto = modelMapper.map(group, GroupWithPhotoResponseDto.class);
+        dto.setPhoto(getOrDefaultContentPhoto(group.getPhoto()));
+        groupPageInfoResponseDto.setGroup(dto);
+        return groupPageInfoResponseDto;
     }
 
     private void setPhoto(Group group, MultipartFile photoFile) {
@@ -108,21 +111,19 @@ public class GroupService {
         Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
     }
 
-    private GroupPageInfoResponseDto createPageInfo(Group group) {
-        GroupPageInfoResponseDto groupPageInfoResponseDto = new GroupPageInfoResponseDto();
-        groupPageInfoResponseDto.setGroup(modelMapper.map(group, GroupResponseDto.class));
-        return groupPageInfoResponseDto;
-    }
-
     @Transactional
     public GroupsResponseDto getAllGroups(int start, int end) {
-        List<GroupResponseDto> groups = groupRepository.getAllGroups(start, end - start)
+        List<GroupWithPhotoResponseDto> groups = groupRepository.getAllGroups(start, end - start)
                 .stream()
-                .map(p -> modelMapper.map(p, GroupResponseDto.class))
+                .map(group -> {
+                    GroupWithPhotoResponseDto dto = modelMapper.map(group, GroupWithPhotoResponseDto.class);
+                    dto.setPhoto(getOrDefaultContentPhoto(group.getPhoto()));
+                    return dto;
+                })
                 .collect(Collectors.toList());
         GroupsResponseDto groupsResponseDto = new GroupsResponseDto();
         groupsResponseDto.setGroups(groups);
-        groupsResponseDto.setTotalSize((int) photoRepository.count());
+        groupsResponseDto.setTotalSize((int) groupRepository.count());
         return groupsResponseDto;
     }
 }

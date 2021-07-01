@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class GroupPageInfoResponseDto {
-    private GroupResponseDto group;
+    private GroupWithPhotoResponseDto group;
     private PageInfoAccessResponseDto accesses;
 }

@@ -5,6 +5,8 @@ import com.homework.social_network.dto.request.AccountUpdateRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
 import com.homework.social_network.dto.response.AccountResponseDto;
 import com.homework.social_network.dto.response.AccountPageInfoResponseDto;
+import com.homework.social_network.dto.response.AccountsResponseDto;
+import com.homework.social_network.dto.response.GroupsResponseDto;
 import com.homework.social_network.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -52,5 +56,10 @@ public class AccountController {
     @GetMapping("/{id}/page-info")
     public AccountPageInfoResponseDto getPageInfo(@PathVariable UUID id) {
         return accountService.getPageInfo(id);
+    }
+
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public AccountsResponseDto getAccounts(@RequestParam int start, @RequestParam int end) {
+        return accountService.getAllAccount(start, end);
     }
 }

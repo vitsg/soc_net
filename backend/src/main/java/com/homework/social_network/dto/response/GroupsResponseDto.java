@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class GroupsResponseDto {
 
-    private List<GroupResponseDto> groups;
+    private List<GroupWithPhotoResponseDto> groups;
     private int totalSize;
 }

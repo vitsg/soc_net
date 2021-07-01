@@ -4,6 +4,10 @@ import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
 import com.homework.social_network.dto.response.AccountResponseDto;
+import com.homework.social_network.dto.response.AccountWithPhotoResponseDto;
+import com.homework.social_network.dto.response.AccountsResponseDto;
+import com.homework.social_network.dto.response.GroupWithPhotoResponseDto;
+import com.homework.social_network.dto.response.GroupsResponseDto;
 import com.homework.social_network.dto.response.PageInfoAccessResponseDto;
 import com.homework.social_network.dto.response.AccountPageInfoResponseDto;
 import com.homework.social_network.entity.Account;
@@ -20,10 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.homework.social_network.utils.Utils.getDefaultImage;
+import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
 
 @Service
 @Slf4j
@@ -101,11 +108,7 @@ public class AccountService {
     @Transactional
     public byte[] getAccountPhoto(UUID id) {
         Photo photo = photoRepository.getByOwnerIdAndMainIsTrue(id);
-        if (photo == null) {
-            return getDefaultImage();
-        } else {
-            return photo.getData();
-        }
+        return getOrDefaultContentPhoto(photo);
     }
 
     @Transactional
@@ -122,5 +125,21 @@ public class AccountService {
         Optional.ofNullable(account.getPhoto()).ifPresent(p -> pageInfoAccessResponseDto.setCanRemovePhoto(true));
         accountPageInfoResponseDto.setAccesses(pageInfoAccessResponseDto);
         return accountPageInfoResponseDto;
+    }
+
+    @Transactional
+    public AccountsResponseDto getAllAccount(int start, int end) {
+        List<AccountWithPhotoResponseDto> accounts = accountRepository.getAllAccounts(start, end - start)
+                .stream()
+                .map(group -> {
+                    AccountWithPhotoResponseDto dto = modelMapper.map(group, AccountWithPhotoResponseDto.class);
+                    dto.setPhoto(getOrDefaultContentPhoto(group.getPhoto()));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        AccountsResponseDto accountsResponseDto = new AccountsResponseDto();
+        accountsResponseDto.setAccounts(accounts);
+        accountsResponseDto.setTotalSize((int) accountRepository.count());
+        return accountsResponseDto;
     }
 }

@@ -1,6 +1,7 @@
 package com.homework.social_network.utils;
 
 import com.homework.social_network.entity.Account;
+import com.homework.social_network.entity.Photo;
 import org.apache.commons.io.IOUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,14 @@ public class Utils {
             return IOUtils.toByteArray(requireNonNull(is));
         } catch (Exception e) {
             throw new RuntimeException("Невозможно получить дефолтное фото", e);
+        }
+    }
+
+    public static byte[] getOrDefaultContentPhoto(Photo photo) {
+        if (photo == null) {
+            return getDefaultImage();
+        } else {
+            return photo.getData();
         }
     }
 }

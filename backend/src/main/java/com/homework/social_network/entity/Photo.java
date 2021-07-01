@@ -22,7 +22,4 @@ public class Photo extends BaseEntity {
 
     @Column(name = "main", nullable = false)
     private boolean main;
-
-    @Column(name = "create_date", nullable = false)
-    private LocalDateTime createDate;
 }

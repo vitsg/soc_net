@@ -28,17 +28,6 @@
     </changeSet>
 
 
-    <changeSet id="1.0.1" author="v.goncharenko">
-        <insert tableName="account">
-            <column name="id" value="6f44a6fa-d013-4f0b-936c-e8c79ab27028"/>
-            <column name="first_name" value="admin"/>
-            <column name="last_name" value="admin"/>
-            <column name="email" value="arteevata93@gmail.com"/>
-            <column name="password" value="$2a$10$Usd82tMreV0HVpBEgN4U6Oo8Ft0HChco9j4lB8MR8TOwjblTzqCqS"/>
-            <column name="role" value="ADMIN"/>
-        </insert>
-    </changeSet>
-
     <changeSet id="1.0.2" author="v.goncharenko">
         <addColumn tableName="account">
             <column name="sex" type="VARCHAR(255)"/>
@@ -115,6 +104,25 @@
                 <constraints nullable="false"/>
             </column>
         </addColumn>
+    </changeSet>
+    <changeSet id="1625157878338-3" author="vitsg (generated)">
+        <addColumn tableName="account">
+            <column name="create_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="1.0.1" author="v.goncharenko">
+        <insert tableName="account">
+            <column name="id" value="6f44a6fa-d013-4f0b-936c-e8c79ab27028"/>
+            <column name="first_name" value="admin"/>
+            <column name="last_name" value="admin"/>
+            <column name="email" value="arteevata93@gmail.com"/>
+            <column name="password" value="$2a$10$Usd82tMreV0HVpBEgN4U6Oo8Ft0HChco9j4lB8MR8TOwjblTzqCqS"/>
+            <column name="role" value="ADMIN"/>
+            <column name="create_date" value="now()"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

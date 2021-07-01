@@ -69,7 +69,7 @@ public class Account extends BaseEntity implements UserDetails {
     private String description;
 
     @JoinColumn(name = "photo_id")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Photo photo;
 
     @Override
