@@ -53,6 +53,7 @@ public class AccountService {
         Account account = modelMapper.map(accountRegistrationRequestDto, Account.class);
         account.setRole(UserRole.USER);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
+        account.setCreateDate(LocalDateTime.now());
         Account savedAccount = accountRepository.save(account);
         return modelMapper.map(savedAccount, AccountResponseDto.class);
     }
@@ -131,9 +132,9 @@ public class AccountService {
     public AccountsResponseDto getAllAccount(int start, int end) {
         List<AccountWithPhotoResponseDto> accounts = accountRepository.getAllAccounts(start, end - start)
                 .stream()
-                .map(group -> {
-                    AccountWithPhotoResponseDto dto = modelMapper.map(group, AccountWithPhotoResponseDto.class);
-                    dto.setPhoto(getOrDefaultContentPhoto(group.getPhoto()));
+                .map(account -> {
+                    AccountWithPhotoResponseDto dto = modelMapper.map(account, AccountWithPhotoResponseDto.class);
+                    dto.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
                     return dto;
                 })
                 .collect(Collectors.toList());
