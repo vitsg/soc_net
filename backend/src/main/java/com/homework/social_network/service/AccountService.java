@@ -3,14 +3,13 @@ package com.homework.social_network.service;
 import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
+import com.homework.social_network.dto.response.AccountPageInfoResponseDto;
 import com.homework.social_network.dto.response.AccountResponseDto;
 import com.homework.social_network.dto.response.AccountWithPhotoResponseDto;
 import com.homework.social_network.dto.response.AccountsResponseDto;
-import com.homework.social_network.dto.response.GroupWithPhotoResponseDto;
-import com.homework.social_network.dto.response.GroupsResponseDto;
 import com.homework.social_network.dto.response.PageInfoAccessResponseDto;
-import com.homework.social_network.dto.response.AccountPageInfoResponseDto;
 import com.homework.social_network.entity.Account;
+import com.homework.social_network.entity.BaseEntity;
 import com.homework.social_network.entity.Photo;
 import com.homework.social_network.enums.UserRole;
 import com.homework.social_network.repo.AccountRepository;
@@ -25,11 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.homework.social_network.utils.Utils.getDefaultImage;
 import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
 
 @Service
@@ -142,5 +141,16 @@ public class AccountService {
         accountsResponseDto.setAccounts(accounts);
         accountsResponseDto.setTotalSize((int) accountRepository.count());
         return accountsResponseDto;
+    }
+
+    @Transactional
+    public Map<UUID, AccountWithPhotoResponseDto> getBatch(List<UUID> ids) {
+        return accountRepository.findAllById(ids)
+                .stream()
+                .collect(Collectors.toMap(BaseEntity::getId, g -> {
+                    AccountWithPhotoResponseDto dto = modelMapper.map(g, AccountWithPhotoResponseDto.class);
+                    dto.setPhoto(getOrDefaultContentPhoto(g.getPhoto()));
+                    return dto;
+                }));
     }
 }

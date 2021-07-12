@@ -5,6 +5,7 @@ import com.homework.social_network.dto.request.GroupUpdateRequestDto;
 import com.homework.social_network.dto.response.GroupPageInfoResponseDto;
 import com.homework.social_network.dto.response.GroupWithPhotoResponseDto;
 import com.homework.social_network.dto.response.GroupsResponseDto;
+import com.homework.social_network.entity.BaseEntity;
 import com.homework.social_network.entity.Group;
 import com.homework.social_network.entity.Photo;
 import com.homework.social_network.repo.GroupRepository;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -125,5 +127,16 @@ public class GroupService {
         groupsResponseDto.setGroups(groups);
         groupsResponseDto.setTotalSize((int) groupRepository.count());
         return groupsResponseDto;
+    }
+
+    @Transactional
+    public Map<UUID, GroupWithPhotoResponseDto> getBatch(List<UUID> ids) {
+        return groupRepository.findAllById(ids)
+                .stream()
+                .collect(Collectors.toMap(BaseEntity::getId, g -> {
+                    GroupWithPhotoResponseDto dto = modelMapper.map(g, GroupWithPhotoResponseDto.class);
+                    dto.setPhoto(getOrDefaultContentPhoto(g.getPhoto()));
+                    return dto;
+                }));
     }
 }

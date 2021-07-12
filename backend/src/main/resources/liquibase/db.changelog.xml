@@ -124,5 +124,29 @@
             <column name="create_date" value="now()"/>
         </insert>
     </changeSet>
+    <changeSet id="1626114547467-3" author="vitsg (generated)">
+        <createTable tableName="friend_request">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FRIEND_REQUEST"/>
+            </column>
+            <column name="create_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_account_id" type="UUID"/>
+            <column name="target_account_id" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1626114547467-4" author="vitsg (generated)">
+        <createTable tableName="group_request">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GROUP_REQUEST"/>
+            </column>
+            <column name="create_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_account_id" type="UUID"/>
+            <column name="target_group_id" type="UUID"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
