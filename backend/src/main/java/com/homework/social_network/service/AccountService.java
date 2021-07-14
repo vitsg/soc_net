@@ -109,9 +109,9 @@ public class AccountService {
     }
 
     private void removePhoto(Account account) {
-        account.setPhoto(null);
         Photo forRemove = account.getPhoto();
         Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
+        account.setPhoto(null);
     }
 
     @Transactional

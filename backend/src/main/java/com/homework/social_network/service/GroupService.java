@@ -130,9 +130,9 @@ public class GroupService {
     }
 
     private void removePhoto(Group group) {
-        group.setPhoto(null);
         Photo forRemove = group.getPhoto();
         Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
+        group.setPhoto(null);
     }
 
     @Transactional
