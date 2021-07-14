@@ -1,6 +1,6 @@
 package com.homework.social_network.service;
 
-import com.homework.social_network.dto.response.GroupsResponseDto;
+import com.homework.social_network.entity.FriendRequest;
 import com.homework.social_network.entity.GroupRequest;
 import com.homework.social_network.enums.GroupRelationStatus;
 import com.homework.social_network.repo.GroupRequestRepository;
@@ -47,5 +47,9 @@ public class GroupRequestService {
     @Transactional
     public int countParticipantGroups(UUID accountId) {
         return groupRequestRepository.countByOwnerAccountId(accountId);
+    }
+
+    public GroupRequest getRequestGroup(UUID main, UUID target) {
+        return groupRequestRepository.findByOwnerAccountIdAndTargetGroupId(main, target);
     }
 }

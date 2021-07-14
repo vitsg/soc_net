@@ -1,5 +1,6 @@
 package com.homework.social_network.dto.response;
 
+import com.homework.social_network.dto.response.account.AccountResponseDto;
 import com.homework.social_network.enums.Access;
 import lombok.Data;
 

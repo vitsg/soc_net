@@ -2,9 +2,9 @@ package com.homework.social_network.controller;
 
 import com.homework.social_network.dto.request.GroupCreateRequestDto;
 import com.homework.social_network.dto.request.GroupUpdateRequestDto;
-import com.homework.social_network.dto.response.GroupPageInfoResponseDto;
-import com.homework.social_network.dto.response.GroupWithPhotoResponseDto;
-import com.homework.social_network.dto.response.GroupsResponseDto;
+import com.homework.social_network.dto.response.group.GroupPageInfoResponseDto;
+import com.homework.social_network.dto.response.group.GroupWithPhotoResponseDto;
+import com.homework.social_network.dto.response.group.GroupsResponseDto;
 import com.homework.social_network.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -148,5 +148,18 @@
             <column name="target_group_id" type="UUID"/>
         </createTable>
     </changeSet>
+    <changeSet id="1626286572034-3" author="vitsg (generated)">
+        <addColumn tableName="sn_group">
+            <column name="owner_id" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1626286572034-4" author="vitsg (generated)">
+        <addNotNullConstraint columnName="owner_id" tableName="sn_group"/>
+    </changeSet>
+    <changeSet id="1626286572034-5" author="vitsg (generated)">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="sn_group"
+                                 constraintName="FK_SN_GROUP_ON_OWNER" referencedColumnNames="id"
+                                 referencedTableName="account"/>
+    </changeSet>
 
 </databaseChangeLog>

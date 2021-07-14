@@ -3,14 +3,16 @@ package com.homework.social_network.service;
 import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
-import com.homework.social_network.dto.response.AccountPageInfoResponseDto;
-import com.homework.social_network.dto.response.AccountResponseDto;
-import com.homework.social_network.dto.response.AccountWithPhotoResponseDto;
-import com.homework.social_network.dto.response.AccountsResponseDto;
-import com.homework.social_network.dto.response.PageInfoAccessResponseDto;
+import com.homework.social_network.dto.response.account.AccountPageInfoResponseDto;
+import com.homework.social_network.dto.response.account.AccountPageMetainfoResponseDto;
+import com.homework.social_network.dto.response.account.AccountResponseDto;
+import com.homework.social_network.dto.response.account.AccountWithPhotoResponseDto;
+import com.homework.social_network.dto.response.account.AccountsResponseDto;
+import com.homework.social_network.dto.response.account.AccountPageInfoAccessResponseDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.BaseEntity;
 import com.homework.social_network.entity.Photo;
+import com.homework.social_network.enums.FriendRelationStatus;
 import com.homework.social_network.enums.UserRole;
 import com.homework.social_network.repo.AccountRepository;
 import com.homework.social_network.repo.PhotoRepository;
@@ -29,6 +31,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.homework.social_network.utils.Utils.getCurrentAccount;
 import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
 
 @Service
@@ -46,6 +49,12 @@ public class AccountService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private AccountRelationService accountRelationService;
+
+    @Autowired
+    private FriendRequestService friendRequestService;
 
     @Transactional
     public AccountResponseDto registration(AccountRegistrationRequestDto accountRegistrationRequestDto) {
@@ -117,13 +126,21 @@ public class AccountService {
         return createPageInfo(account);
     }
 
-    private AccountPageInfoResponseDto createPageInfo(Account account) {
+    private AccountPageInfoResponseDto createPageInfo(Account targetAccount) {
+        Account currentAccount = getCurrentAccount();
         AccountPageInfoResponseDto accountPageInfoResponseDto = new AccountPageInfoResponseDto();
-        accountPageInfoResponseDto.setAccount(modelMapper.map(account, AccountResponseDto.class));
-        PageInfoAccessResponseDto pageInfoAccessResponseDto = new PageInfoAccessResponseDto();
-        pageInfoAccessResponseDto.setCanChangePhoto(true);
-        Optional.ofNullable(account.getPhoto()).ifPresent(p -> pageInfoAccessResponseDto.setCanRemovePhoto(true));
-        accountPageInfoResponseDto.setAccesses(pageInfoAccessResponseDto);
+        accountPageInfoResponseDto.setAccount(modelMapper.map(targetAccount, AccountResponseDto.class));
+
+        AccountPageInfoAccessResponseDto accountPageInfoAccessResponseDto = new AccountPageInfoAccessResponseDto();
+        accountPageInfoAccessResponseDto.setCanChangePhoto(true);
+        Optional.ofNullable(targetAccount.getPhoto()).ifPresent(p -> accountPageInfoAccessResponseDto.setCanRemovePhoto(true));
+        accountPageInfoAccessResponseDto.setCanModify(targetAccount.getId().equals(currentAccount.getId()));
+        accountPageInfoResponseDto.setAccesses(accountPageInfoAccessResponseDto);
+
+        AccountPageMetainfoResponseDto metainfo = new AccountPageMetainfoResponseDto();
+        metainfo.setFriendRelationStatus(accountRelationService.getRelationAccounts(currentAccount, targetAccount));
+        accountPageInfoResponseDto.setInfo(metainfo);
+
         return accountPageInfoResponseDto;
     }
 
@@ -152,5 +169,54 @@ public class AccountService {
                     dto.setPhoto(getOrDefaultContentPhoto(g.getPhoto()));
                     return dto;
                 }));
+    }
+
+    @Transactional
+    public FriendRelationStatus addFriend(UUID targetId) {
+        return friendRequestService.addFriendRequest(targetId);
+    }
+
+    @Transactional
+    public FriendRelationStatus removeFriend(UUID targetId) {
+        return friendRequestService.removeFriendRequest(targetId);
+    }
+
+    @Transactional
+    public AccountsResponseDto getFriends(UUID accountId, int start, int end) {
+        List<UUID> accountIds = friendRequestService.getFriendIds(accountId, start, end);
+        Map<UUID, AccountWithPhotoResponseDto> batch = getBatch(accountIds);
+        List<AccountWithPhotoResponseDto> groups = accountIds.stream()
+                .map(batch::get)
+                .collect(Collectors.toList());
+        AccountsResponseDto groupsResponseDto = new AccountsResponseDto();
+        groupsResponseDto.setAccounts(groups);
+        groupsResponseDto.setTotalSize(friendRequestService.countFriends(accountId));
+        return groupsResponseDto;
+    }
+
+    @Transactional
+    public AccountsResponseDto getInputFriends(UUID accountId, int start, int end) {
+        List<UUID> groupIds = friendRequestService.getInputFriends(accountId, start, end);
+        Map<UUID, AccountWithPhotoResponseDto> batch = getBatch(groupIds);
+        List<AccountWithPhotoResponseDto> groups = groupIds.stream()
+                .map(batch::get)
+                .collect(Collectors.toList());
+        AccountsResponseDto groupsResponseDto = new AccountsResponseDto();
+        groupsResponseDto.setAccounts(groups);
+        groupsResponseDto.setTotalSize(friendRequestService.countInputFriends(accountId));
+        return groupsResponseDto;
+    }
+
+    @Transactional
+    public AccountsResponseDto getOutputFriends(UUID accountId, int start, int end) {
+        List<UUID> groupIds = friendRequestService.getOutputFriendIds(accountId, start, end);
+        Map<UUID, AccountWithPhotoResponseDto> batch = getBatch(groupIds);
+        List<AccountWithPhotoResponseDto> groups = groupIds.stream()
+                .map(batch::get)
+                .collect(Collectors.toList());
+        AccountsResponseDto groupsResponseDto = new AccountsResponseDto();
+        groupsResponseDto.setAccounts(groups);
+        groupsResponseDto.setTotalSize(friendRequestService.countOutputFriends(accountId));
+        return groupsResponseDto;
     }
 }

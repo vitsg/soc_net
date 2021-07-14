@@ -1,4 +1,4 @@
-package com.homework.social_network.dto.response;
+package com.homework.social_network.dto.response.account;
 
 import com.homework.social_network.enums.Sex;
 import com.homework.social_network.enums.UserRole;

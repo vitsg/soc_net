@@ -4,6 +4,7 @@ import com.homework.social_network.entity.FriendRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, UUID>, CustomFriendRequestRepository {
@@ -21,4 +22,8 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, UU
     @Query("select count(f1) from FriendRequest f1 where f1.ownerAccountId = :ownerAccountId " +
             " and f1.targetAccountId not in (select f2.ownerAccountId from FriendRequest f2 where f2.targetAccountId = :ownerAccountId)")
     int countOutputRequest(UUID ownerAccountId);
+
+    @Query("select f from FriendRequest f where (f.ownerAccountId = :main and f.targetAccountId = :target)" +
+            "or (f.targetAccountId = :main and f.ownerAccountId = :target)")
+    List<FriendRequest> getRequestsBetweenAccount(UUID main, UUID target);
 }

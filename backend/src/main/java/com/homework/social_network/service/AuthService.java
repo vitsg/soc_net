@@ -1,6 +1,6 @@
 package com.homework.social_network.service;
 
-import com.homework.social_network.dto.response.AccountResponseDto;
+import com.homework.social_network.dto.response.account.AccountResponseDto;
 import com.homework.social_network.dto.response.CurrentStatusDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.enums.Access;
@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.homework.social_network.service.Converter.convert;
 
 @Service
 public class AuthService {

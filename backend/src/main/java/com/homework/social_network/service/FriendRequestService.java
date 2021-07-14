@@ -20,7 +20,7 @@ public class FriendRequestService {
     private FriendRequestRepository friendRequestRepository;
 
     @Transactional
-    public FriendRelationStatus addFriend(UUID targetId) {
+    public FriendRelationStatus addFriendRequest(UUID targetId) {
         UUID currentUserId = getCurrentAccountId();
         FriendRequest friendRequest = new FriendRequest();
         friendRequest.setOwnerAccountId(currentUserId);
@@ -32,7 +32,7 @@ public class FriendRequestService {
     }
 
     @Transactional
-    public FriendRelationStatus removeFriend(UUID targetId) {
+    public FriendRelationStatus removeFriendRequest(UUID targetId) {
         UUID currentUserId = getCurrentAccountId();
         FriendRequest outputRequest = friendRequestRepository.findByOwnerAccountIdAndTargetAccountId(currentUserId, targetId);
         friendRequestRepository.delete(outputRequest);
@@ -68,5 +68,9 @@ public class FriendRequestService {
     @Transactional
     public int countOutputFriends(UUID accountId) {
         return friendRequestRepository.countOutputRequest(accountId);
+    }
+
+    public List<FriendRequest> getRequestsBetweenAccounts(UUID main, UUID target) {
+        return friendRequestRepository.getRequestsBetweenAccount(main, target);
     }
 }

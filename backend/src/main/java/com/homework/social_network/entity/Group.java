@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -37,4 +38,9 @@ public class Group extends BaseEntity {
     @JoinColumn(name = "photo_id")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Photo photo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private Account owner;
+
 }

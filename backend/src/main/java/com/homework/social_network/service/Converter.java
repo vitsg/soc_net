@@ -1,6 +1,6 @@
 package com.homework.social_network.service;
 
-import com.homework.social_network.dto.response.AccountResponseDto;
+import com.homework.social_network.dto.response.account.AccountResponseDto;
 import com.homework.social_network.entity.Account;
 
 public class Converter {

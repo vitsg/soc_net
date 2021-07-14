@@ -1,4 +1,4 @@
-package com.homework.social_network.dto.response;
+package com.homework.social_network.dto.response.group;
 
 import lombok.Data;
 
