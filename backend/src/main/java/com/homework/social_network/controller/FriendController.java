@@ -30,6 +30,11 @@ public class FriendController {
         return friendService.removeFriend(id);
     }
 
+    @PostMapping("/rejectFriend/{id}")
+    public FriendRelationStatus rejectFriend(@PathVariable UUID id) {
+        return friendService.rejectFriend(id);
+    }
+
     @GetMapping("/get-friends/{id}")
     public AccountsResponseDto getFriends(@PathVariable UUID id, @RequestParam int start, @RequestParam int end, @RequestParam(required = false) String name) {
         return friendService.getFriends(id, start, end, name);

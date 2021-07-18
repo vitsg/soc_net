@@ -45,6 +45,11 @@ public class FriendService {
     }
 
     @Transactional
+    public FriendRelationStatus rejectFriend(UUID targetId) {
+        return friendRequestService.rejectFriendRequest(targetId);
+    }
+
+    @Transactional
     public AccountsResponseDto getFriends(UUID targetAccountId, int start, int end, String name) {
         List<UUID> accountIds = friendRequestService.getFriendIds(targetAccountId, start, end);
         Map<UUID, Account> batch = accountService.getBatch(accountIds);

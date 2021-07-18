@@ -43,6 +43,14 @@ public class FriendRequestService {
     }
 
     @Transactional
+    public FriendRelationStatus rejectFriendRequest(UUID targetId) {
+        UUID currentUserId = getCurrentAccountId();
+        FriendRequest inputRequest = friendRequestRepository.findByOwnerAccountIdAndTargetAccountId(targetId, currentUserId);
+        friendRequestRepository.delete(inputRequest);
+        return FriendRelationStatus.NONE;
+    }
+
+    @Transactional
     public List<UUID> getFriendIds(UUID accountId, int start, int end) {
         return friendRequestRepository.getFriendIds(accountId, start, end - start);
     }
