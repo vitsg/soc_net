@@ -46,8 +46,8 @@ public class GroupRequestService {
     }
 
     @Transactional
-    public List<GroupJoin> getGroupAccountIds(UUID accountId, int start, int end) {
-        return groupRequestRepository.findByOwnerAccountId(accountId, start, end - start);
+    public List<GroupJoin> getGroupAccountIds(UUID groupId, int start, int end) {
+        return groupRequestRepository.findByTargetGroupId(groupId, start, end - start);
     }
 
     @Transactional

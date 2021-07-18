@@ -88,7 +88,7 @@ public class GroupParticipantService {
     @Transactional
     public AccountsResponseDto getGroupAccounts(UUID groupId, int start, int end) {
         Account currentAccount = getCurrentAccount();
-        List<GroupJoin> groupJoins = groupRequestService.getAccountGroupIds(groupId, start, end);
+        List<GroupJoin> groupJoins = groupRequestService.getGroupAccountIds(groupId, start, end);
         Map<UUID, Account> batch = accountService.getBatch(groupJoins.stream()
                 .map(gr -> gr.getOwnerAccount().getId())
                 .collect(Collectors.toList()));
