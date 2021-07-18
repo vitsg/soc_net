@@ -2,9 +2,7 @@ package com.homework.social_network.service;
 
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.FriendRequest;
-import com.homework.social_network.entity.Group;
 import com.homework.social_network.enums.FriendRelationStatus;
-import com.homework.social_network.enums.GroupRelationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +14,6 @@ public class AccountRelationService {
 
     @Autowired
     private FriendRequestService friendRequestService;
-
-    @Autowired
-    private GroupRequestService groupRequestService;
 
     public FriendRelationStatus getRelationAccounts(Account main, Account target) {
         if (main.getId().equals(target.getId())) {
@@ -35,7 +30,7 @@ public class AccountRelationService {
     }
 
     private FriendRelationStatus getRelationStatusByRequest(UUID main, UUID target, FriendRequest request) {
-        if (request.getOwnerAccountId().equals(main)) {
+        if (request.getOwnerAccount().getId().equals(main)) {
             return FriendRelationStatus.OUTPUT;
         } else {
             return FriendRelationStatus.INPUT;

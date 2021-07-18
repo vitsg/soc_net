@@ -3,9 +3,9 @@ package com.homework.social_network.controller;
 import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
-import com.homework.social_network.dto.response.account.AccountResponseDto;
-import com.homework.social_network.dto.response.account.AccountPageInfoResponseDto;
-import com.homework.social_network.dto.response.account.AccountsResponseDto;
+import com.homework.social_network.dto.response.account.page.AccountPageResponseDto;
+import com.homework.social_network.dto.response.account.page.AccountPageInfoResponseDto;
+import com.homework.social_network.dto.response.account.list.AccountsResponseDto;
 import com.homework.social_network.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,17 +28,17 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/registration")
-    public AccountResponseDto registration(@RequestBody AccountRegistrationRequestDto accountRegistrationRequestDto) {
+    public AccountPageResponseDto registration(@RequestBody AccountRegistrationRequestDto accountRegistrationRequestDto) {
         return accountService.registration(accountRegistrationRequestDto);
     }
 
     @GetMapping("/{id}")
-    public AccountResponseDto findOne(@PathVariable String id) {
-        return accountService.findOne(id, true);
+    public AccountPageResponseDto findOne(@PathVariable UUID id) {
+        return accountService.findOne(id);
     }
 
     @PostMapping
-    public AccountResponseDto update(@RequestBody AccountUpdateRequestDto accountUpdateRequestDto) {
+    public AccountPageResponseDto update(@RequestBody AccountUpdateRequestDto accountUpdateRequestDto) {
         return accountService.update(accountUpdateRequestDto);
     }
 

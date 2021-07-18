@@ -12,8 +12,8 @@ public class CustomFriendRequestRepositoryImpl implements CustomFriendRequestRep
 
     @Override
     public List<UUID> getFriendIds(UUID ownerAccountId, int start, int limit) {
-        return entityManager.createQuery("select f1.targetAccountId from FriendRequest f1 where f1.ownerAccountId = :ownerAccountId " +
-                " and f1.targetAccountId in (select f2.ownerAccountId from FriendRequest f2 where f2.targetAccountId = :ownerAccountId) " +
+        return entityManager.createQuery("select f1.targetAccount.id from FriendRequest f1 where f1.ownerAccount.id = :ownerAccountId " +
+                " and f1.targetAccount.id in (select f2.ownerAccount.id from FriendRequest f2 where f2.targetAccount.id = :ownerAccountId) " +
                 "order by f1.createDate desc", UUID.class)
                 .setFirstResult(start)
                 .setMaxResults(limit)
@@ -23,8 +23,8 @@ public class CustomFriendRequestRepositoryImpl implements CustomFriendRequestRep
 
     @Override
     public List<UUID> getInputFriendsIds(UUID ownerAccountId, int start, int limit) {
-        return entityManager.createQuery("select f1.ownerAccountId from FriendRequest f1 where f1.targetAccountId = :ownerAccountId " +
-                " and f1.ownerAccountId not in (select f2.targetAccountId from FriendRequest f2 where f2.ownerAccountId = :ownerAccountId) " +
+        return entityManager.createQuery("select f1.ownerAccount.id from FriendRequest f1 where f1.targetAccount.id = :ownerAccountId " +
+                " and f1.ownerAccount.id not in (select f2.targetAccount.id from FriendRequest f2 where f2.ownerAccount.id = :ownerAccountId) " +
                 "order by f1.createDate desc", UUID.class)
                 .setFirstResult(start)
                 .setMaxResults(limit)
@@ -34,8 +34,8 @@ public class CustomFriendRequestRepositoryImpl implements CustomFriendRequestRep
 
     @Override
     public List<UUID> getOutputFriendIds(UUID ownerAccountId, int start, int limit) {
-        return entityManager.createQuery("select f1.targetAccountId from FriendRequest f1 where f1.ownerAccountId = :ownerAccountId " +
-                " and f1.targetAccountId not in (select f2.ownerAccountId from FriendRequest f2 where f2.targetAccountId = :ownerAccountId) " +
+        return entityManager.createQuery("select f1.targetAccount.id from FriendRequest f1 where f1.ownerAccount.id = :ownerAccountId " +
+                " and f1.targetAccount.id not in (select f2.ownerAccount.id from FriendRequest f2 where f2.targetAccount.id = :ownerAccountId) " +
                 "order by f1.createDate desc", UUID.class)
                 .setFirstResult(start)
                 .setMaxResults(limit)

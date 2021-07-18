@@ -1,11 +1,11 @@
-package com.homework.social_network.dto.response.group;
+package com.homework.social_network.dto.response.group.page;
 
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
-public class GroupResponseDto {
+public class GroupPageResponseDto {
 
     private UUID id;
     private String name;

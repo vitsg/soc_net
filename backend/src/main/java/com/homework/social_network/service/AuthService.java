@@ -1,6 +1,6 @@
 package com.homework.social_network.service;
 
-import com.homework.social_network.dto.response.account.AccountResponseDto;
+import com.homework.social_network.dto.response.account.page.AccountPageResponseDto;
 import com.homework.social_network.dto.response.CurrentStatusDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.enums.Access;
@@ -48,7 +48,7 @@ public class AuthService {
 
     private CurrentStatusDto createCurrentStatusDto(Account account, List<Access> accesses) {
         CurrentStatusDto currentStatusDto = new CurrentStatusDto();
-        currentStatusDto.setCurrentAccount(modelMapper.map(account, AccountResponseDto.class));
+        currentStatusDto.setCurrentAccount(modelMapper.map(account, AccountPageResponseDto.class));
         currentStatusDto.setAccesses(accesses);
         return currentStatusDto;
     }

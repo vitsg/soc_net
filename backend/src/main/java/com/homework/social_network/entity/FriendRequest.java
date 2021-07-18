@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.UUID;
@@ -13,9 +16,12 @@ import java.util.UUID;
 @Table(name = "friend_request", uniqueConstraints = @UniqueConstraint(columnNames={"owner_account_id", "target_account_id"}))
 public class FriendRequest extends BaseEntity {
 
-    @Column(name = "owner_account_id")
-    private UUID ownerAccountId;
+    @ManyToOne
+    @JoinColumn(name = "owner_account_id")
+    private Account ownerAccount;
 
-    @Column(name = "target_account_id")
-    private UUID targetAccountId;
+    @ManyToOne
+    @JoinColumn(name = "target_account_id")
+    private Account targetAccount;
+
 }

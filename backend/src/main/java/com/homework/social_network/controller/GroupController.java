@@ -2,9 +2,9 @@ package com.homework.social_network.controller;
 
 import com.homework.social_network.dto.request.GroupCreateRequestDto;
 import com.homework.social_network.dto.request.GroupUpdateRequestDto;
-import com.homework.social_network.dto.response.group.GroupPageInfoResponseDto;
-import com.homework.social_network.dto.response.group.GroupWithPhotoResponseDto;
-import com.homework.social_network.dto.response.group.GroupsResponseDto;
+import com.homework.social_network.dto.response.group.page.GroupPageInfoResponseDto;
+import com.homework.social_network.dto.response.group.GroupWithPhotoPageResponseDto;
+import com.homework.social_network.dto.response.group.list.GroupsResponseDto;
 import com.homework.social_network.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,17 +26,17 @@ public class GroupController {
     private GroupService groupService;
 
     @PostMapping("/create")
-    public GroupWithPhotoResponseDto create(@ModelAttribute GroupCreateRequestDto groupCreateRequestDto) {
+    public GroupWithPhotoPageResponseDto create(@ModelAttribute GroupCreateRequestDto groupCreateRequestDto) {
         return groupService.create(groupCreateRequestDto);
     }
 
     @GetMapping("/{id}")
-    public GroupWithPhotoResponseDto findOne(@PathVariable String id) {
+    public GroupWithPhotoPageResponseDto findOne(@PathVariable String id) {
         return groupService.findOne(id);
     }
 
     @PostMapping
-    public GroupWithPhotoResponseDto update(@ModelAttribute GroupUpdateRequestDto groupUpdateRequestDto) {
+    public GroupWithPhotoPageResponseDto update(@ModelAttribute GroupUpdateRequestDto groupUpdateRequestDto) {
         return groupService.update(groupUpdateRequestDto);
     }
 

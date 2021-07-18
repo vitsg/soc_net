@@ -1,5 +1,6 @@
 package com.homework.social_network.service;
 
+import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.FriendRequest;
 import com.homework.social_network.enums.FriendRelationStatus;
 import com.homework.social_network.repo.FriendRequestRepository;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static com.homework.social_network.utils.Utils.getCurrentAccount;
 import static com.homework.social_network.utils.Utils.getCurrentAccountId;
 
 @Service
@@ -20,14 +22,14 @@ public class FriendRequestService {
     private FriendRequestRepository friendRequestRepository;
 
     @Transactional
-    public FriendRelationStatus addFriendRequest(UUID targetId) {
-        UUID currentUserId = getCurrentAccountId();
+    public FriendRelationStatus addFriendRequest(Account targetAccount) {
+        Account currentAccount = getCurrentAccount();
         FriendRequest friendRequest = new FriendRequest();
-        friendRequest.setOwnerAccountId(currentUserId);
-        friendRequest.setTargetAccountId(targetId);
+        friendRequest.setOwnerAccount(currentAccount);
+        friendRequest.setTargetAccount(targetAccount);
         friendRequest.setCreateDate(LocalDateTime.now());
         friendRequestRepository.save(friendRequest);
-        FriendRequest inputRequest = friendRequestRepository.findByOwnerAccountIdAndTargetAccountId(targetId, currentUserId);
+        FriendRequest inputRequest = friendRequestRepository.findByOwnerAccountIdAndTargetAccountId(targetAccount.getId(), currentAccount.getId());
         return inputRequest == null ? FriendRelationStatus.OUTPUT : FriendRelationStatus.FULL;
     }
 
