@@ -189,5 +189,17 @@
                                  constraintName="FK_GROUP_REQUEST_ON_TARGET_GROUP" referencedColumnNames="id"
                                  referencedTableName="sn_group"/>
     </changeSet>
+    <changeSet id="1626623487777-3" author="vitsg (generated)">
+        <createIndex indexName="UNIQUE_FRIEND_REQUEST" tableName="friend_request" unique="true">
+            <column name="owner_account_id"/>
+            <column name="target_account_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1626623487777-4" author="vitsg (generated)">
+        <createIndex indexName="UNIQUE_GROUP_REQUEST" tableName="group_request" unique="true">
+            <column name="owner_account_id"/>
+            <column name="target_group_id"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>
