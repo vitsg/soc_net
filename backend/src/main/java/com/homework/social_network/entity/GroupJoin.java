@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "group_request", uniqueConstraints = @UniqueConstraint(columnNames={"owner_account_id", "target_group_id"}))
+@Table(name = "group_request", indexes = @Index(name = "unique_group_request", columnList = "owner_account_id, target_group_id", unique = true))
 public class GroupJoin extends BaseEntity {
 
     @ManyToOne
