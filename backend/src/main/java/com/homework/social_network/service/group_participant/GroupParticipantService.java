@@ -49,8 +49,9 @@ public class GroupParticipantService {
 
     @Transactional
     public GroupRelationStatus joinGroup(UUID targetId) {
+        Account currentAccount = getCurrentAccount();
         Group targetGroup = groupService.getGroup(targetId);
-        return groupRequestService.joinGroup(targetGroup);
+        return groupRequestService.joinGroup(currentAccount, targetGroup, GroupRelationStatus.PARTICIPANT);
     }
 
     @Transactional

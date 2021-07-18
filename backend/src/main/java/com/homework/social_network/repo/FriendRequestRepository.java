@@ -11,19 +11,19 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, UU
 
     FriendRequest findByOwnerAccountIdAndTargetAccountId(UUID ownerAccountId, UUID targetAccountId);
 
-    @Query("select count(f1) from FriendRequest f1 where f1.ownerAccountId = :ownerAccountId " +
-            " and f1.targetAccountId in (select f2.ownerAccountId from FriendRequest f2 where f2.targetAccountId = :ownerAccountId)")
+    @Query("select count(f1) from FriendRequest f1 where f1.ownerAccount.id = :ownerAccountId " +
+            " and f1.targetAccount.id in (select f2.ownerAccount.id from FriendRequest f2 where f2.targetAccount.id = :ownerAccountId)")
     int countFriends(UUID ownerAccountId);
 
-    @Query("select count(f1) from FriendRequest f1 where f1.targetAccountId = :ownerAccountId " +
-            " and f1.ownerAccountId not in (select f2.targetAccountId from FriendRequest f2 where f2.ownerAccountId = :ownerAccountId)")
+    @Query("select count(f1) from FriendRequest f1 where f1.targetAccount.id = :ownerAccountId " +
+            " and f1.ownerAccount.id not in (select f2.targetAccount.id from FriendRequest f2 where f2.ownerAccount.id = :ownerAccountId)")
     int countInputRequest(UUID ownerAccountId);
 
-    @Query("select count(f1) from FriendRequest f1 where f1.ownerAccountId = :ownerAccountId " +
-            " and f1.targetAccountId not in (select f2.ownerAccountId from FriendRequest f2 where f2.targetAccountId = :ownerAccountId)")
+    @Query("select count(f1) from FriendRequest f1 where f1.ownerAccount.id = :ownerAccountId " +
+            " and f1.targetAccount.id not in (select f2.ownerAccount.id from FriendRequest f2 where f2.targetAccount.id = :ownerAccountId)")
     int countOutputRequest(UUID ownerAccountId);
 
-    @Query("select f from FriendRequest f where (f.ownerAccountId = :main and f.targetAccountId = :target)" +
-            "or (f.targetAccountId = :main and f.ownerAccountId = :target)")
+    @Query("select f from FriendRequest f where (f.ownerAccount.id = :main and f.targetAccount.id = :target)" +
+            "or (f.targetAccount.id = :main and f.ownerAccount.id = :target)")
     List<FriendRequest> getRequestsBetweenAccount(UUID main, UUID target);
 }

@@ -61,6 +61,7 @@ public class GroupService {
         group.setOwner(currentAccount);
         Group savedGroup = groupRepository.save(group);
         setPhoto(savedGroup, groupCreateRequestDto.getPhoto());
+        groupRequestService.joinGroup(currentAccount, savedGroup, GroupRelationStatus.OWNER);
         GroupWithPhotoPageResponseDto dto = modelMapper.map(savedGroup, GroupWithPhotoPageResponseDto.class);
         dto.setPhoto(getOrDefaultContentPhoto(savedGroup.getPhoto()));
         return dto;

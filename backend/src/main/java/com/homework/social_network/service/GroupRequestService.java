@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static com.homework.social_network.utils.Utils.getCurrentAccount;
 import static com.homework.social_network.utils.Utils.getCurrentAccountId;
 
 @Service
@@ -23,12 +22,12 @@ public class GroupRequestService {
     private GroupRequestRepository groupRequestRepository;
 
     @Transactional
-    public GroupRelationStatus joinGroup(Group target) {
-        Account currentAccount = getCurrentAccount();
+    public GroupRelationStatus joinGroup(Account account, Group target, GroupRelationStatus status) {
         GroupJoin groupJoin = new GroupJoin();
-        groupJoin.setOwnerAccount(currentAccount);
+        groupJoin.setOwnerAccount(account);
         groupJoin.setTargetGroup(target);
         groupJoin.setCreateDate(LocalDateTime.now());
+        groupJoin.setStatus(status);
         groupRequestRepository.save(groupJoin);
         return GroupRelationStatus.PARTICIPANT;
     }

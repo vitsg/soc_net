@@ -161,5 +161,33 @@
                                  constraintName="FK_SN_GROUP_ON_OWNER" referencedColumnNames="id"
                                  referencedTableName="account"/>
     </changeSet>
+    <changeSet id="1626621798724-3" author="vitsg (generated)">
+        <addColumn tableName="group_request">
+            <column name="status" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1626621798724-4" author="vitsg (generated)">
+        <addNotNullConstraint columnName="status" tableName="group_request"/>
+    </changeSet>
+    <changeSet id="1626621798724-5" author="vitsg (generated)">
+        <addForeignKeyConstraint baseColumnNames="owner_account_id" baseTableName="friend_request"
+                                 constraintName="FK_FRIEND_REQUEST_ON_OWNER_ACCOUNT" referencedColumnNames="id"
+                                 referencedTableName="account"/>
+    </changeSet>
+    <changeSet id="1626621798724-6" author="vitsg (generated)">
+        <addForeignKeyConstraint baseColumnNames="target_account_id" baseTableName="friend_request"
+                                 constraintName="FK_FRIEND_REQUEST_ON_TARGET_ACCOUNT" referencedColumnNames="id"
+                                 referencedTableName="account"/>
+    </changeSet>
+    <changeSet id="1626621798724-7" author="vitsg (generated)">
+        <addForeignKeyConstraint baseColumnNames="owner_account_id" baseTableName="group_request"
+                                 constraintName="FK_GROUP_REQUEST_ON_OWNER_ACCOUNT" referencedColumnNames="id"
+                                 referencedTableName="account"/>
+    </changeSet>
+    <changeSet id="1626621798724-8" author="vitsg (generated)">
+        <addForeignKeyConstraint baseColumnNames="target_group_id" baseTableName="group_request"
+                                 constraintName="FK_GROUP_REQUEST_ON_TARGET_GROUP" referencedColumnNames="id"
+                                 referencedTableName="sn_group"/>
+    </changeSet>
 
 </databaseChangeLog>
