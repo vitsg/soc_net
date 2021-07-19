@@ -23,7 +23,7 @@ public class AccountRelationService {
         if (friendRequests.size() == 2) {
             return FriendRelationStatus.FULL;
         } else if (friendRequests.size() == 0) {
-            return FriendRelationStatus.NONE;
+            return FriendRelationStatus.NO_RELATION;
         } else {
             return getRelationStatusByRequest(main.getId(), target.getId(), friendRequests.get(0));
         }

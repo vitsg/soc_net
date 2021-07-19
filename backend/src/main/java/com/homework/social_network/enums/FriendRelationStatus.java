@@ -2,5 +2,5 @@ package com.homework.social_network.enums;
 
 public enum FriendRelationStatus {
 
-    NONE, INPUT, OUTPUT, FULL, SELF
+    NO_RELATION, INPUT, OUTPUT, FULL, SELF
 }

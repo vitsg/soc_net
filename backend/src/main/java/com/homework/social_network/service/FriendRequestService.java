@@ -39,7 +39,7 @@ public class FriendRequestService {
         FriendRequest outputRequest = friendRequestRepository.findByOwnerAccountIdAndTargetAccountId(currentUserId, targetId);
         friendRequestRepository.delete(outputRequest);
         FriendRequest incomingRequest = friendRequestRepository.findByOwnerAccountIdAndTargetAccountId(targetId, currentUserId);
-        return incomingRequest == null ? FriendRelationStatus.NONE : FriendRelationStatus.INPUT;
+        return incomingRequest == null ? FriendRelationStatus.NO_RELATION : FriendRelationStatus.INPUT;
     }
 
     @Transactional
@@ -47,7 +47,7 @@ public class FriendRequestService {
         UUID currentUserId = getCurrentAccountId();
         FriendRequest inputRequest = friendRequestRepository.findByOwnerAccountIdAndTargetAccountId(targetId, currentUserId);
         friendRequestRepository.delete(inputRequest);
-        return FriendRelationStatus.NONE;
+        return FriendRelationStatus.NO_RELATION;
     }
 
     @Transactional
