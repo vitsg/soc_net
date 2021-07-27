@@ -201,5 +201,25 @@
             <column name="target_group_id"/>
         </createIndex>
     </changeSet>
+    <changeSet id="1627407397065-5" author="vitsg (generated)">
+        <dropForeignKeyConstraint baseTableName="friend_request" constraintName="fk_friend_request_on_owner_account"/>
+    </changeSet>
+    <changeSet id="1627407397065-6" author="vitsg (generated)">
+        <dropForeignKeyConstraint baseTableName="friend_request" constraintName="fk_friend_request_on_target_account"/>
+    </changeSet>
+    <changeSet id="1627407397065-7" author="vitsg (generated)">
+        <dropForeignKeyConstraint baseTableName="group_request" constraintName="fk_group_request_on_owner_account"/>
+    </changeSet>
+    <changeSet id="1627407397065-8" author="vitsg (generated)">
+        <dropForeignKeyConstraint baseTableName="group_request" constraintName="fk_group_request_on_target_group"/>
+    </changeSet>
+    <changeSet id="1627407397065-3" author="vitsg (generated)">
+        <addNotNullConstraint columnDataType="UUID" columnName="owner_account_id" tableName="friend_request"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1627407397065-4" author="vitsg (generated)">
+        <addNotNullConstraint columnDataType="UUID" columnName="target_account_id" tableName="friend_request"
+                              validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

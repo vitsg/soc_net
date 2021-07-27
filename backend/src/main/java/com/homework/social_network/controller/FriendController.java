@@ -1,6 +1,7 @@
 package com.homework.social_network.controller;
 
 import com.homework.social_network.dto.response.account.list.AccountsResponseDto;
+import com.homework.social_network.entity.Account;
 import com.homework.social_network.enums.FriendRelationStatus;
 import com.homework.social_network.service.friends.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,12 +43,13 @@ public class FriendController {
     }
 
     @GetMapping("/get-input-friends/{id}")
-    public AccountsResponseDto getInputFriends(@PathVariable UUID id, @RequestParam int start, @RequestParam int end) {
-        return friendService.getInputFriends(id, start, end);
+    public AccountsResponseDto getInputFriends(@PathVariable UUID id, @RequestParam int start, @RequestParam int end, @RequestParam(required = false) String name) {
+        return friendService.getInputFriends(id, start, end, name);
     }
 
     @GetMapping("/get-output-friends/{id}")
-    public AccountsResponseDto getOutputFriends(@PathVariable UUID id, @RequestParam int start, @RequestParam int end) {
-        return friendService.getOutputFriends(id, start, end);
+    public AccountsResponseDto getOutputFriends(@PathVariable UUID id, @RequestParam int start, @RequestParam int end, @RequestParam(required = false) String name) {
+        return friendService.getOutputFriends(id, start, end, name);
     }
+
 }

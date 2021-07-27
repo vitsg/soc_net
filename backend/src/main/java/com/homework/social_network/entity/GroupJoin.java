@@ -19,13 +19,11 @@ import java.util.UUID;
 @Table(name = "group_request", indexes = @Index(name = "unique_group_request", columnList = "owner_account_id, target_group_id", unique = true))
 public class GroupJoin extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "owner_account_id")
-    private Account ownerAccount;
+    @Column(name = "owner_account_id")
+    private UUID ownerAccountId;
 
-    @ManyToOne
-    @JoinColumn(name = "target_group_id")
-    private Group targetGroup;
+    @Column(name = "target_group_id")
+    private UUID targetGroupId;
 
     @Column(name = "status", nullable = false)
     @Enumerated(value = EnumType.STRING)

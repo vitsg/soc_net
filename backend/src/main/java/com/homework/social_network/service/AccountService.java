@@ -8,16 +8,16 @@ import com.homework.social_network.dto.response.account.list.AccountSimpleRespon
 import com.homework.social_network.dto.response.account.page.AccountPageInfoResponseDto;
 import com.homework.social_network.dto.response.account.info.AccountMetainfoResponseDto;
 import com.homework.social_network.dto.response.account.page.AccountPageResponseDto;
-import com.homework.social_network.dto.response.account.AccountWithPhotoPageResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountsResponseDto;
 import com.homework.social_network.dto.response.account.access.AccountAccessResponseDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.BaseEntity;
 import com.homework.social_network.entity.Photo;
-import com.homework.social_network.enums.FriendRelationStatus;
 import com.homework.social_network.enums.UserRole;
 import com.homework.social_network.repo.AccountRepository;
 import com.homework.social_network.repo.PhotoRepository;
+import com.homework.social_network.service.relation.AccountRelationService;
+import com.homework.social_network.service.request.FriendRequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,7 +147,7 @@ public class AccountService {
         accountPageInfoResponseDto.setAccesses(accountAccessResponseDto);
 
         AccountMetainfoResponseDto metainfo = new AccountMetainfoResponseDto();
-        metainfo.setFriendRelationStatus(accountRelationService.getRelationAccounts(currentAccount, targetAccount));
+        metainfo.setFriendRelationStatus(accountRelationService.getRelationAccounts(currentAccount.getId(), targetAccount.getId()));
         accountPageInfoResponseDto.setInfo(metainfo);
 
         return accountPageInfoResponseDto;
@@ -162,7 +162,7 @@ public class AccountService {
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
                     simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
                     AccountMetainfoResponseDto info = AccountMetainfoResponseDto.builder()
-                            .friendRelationStatus(accountRelationService.getRelationAccounts(currentAccount, account))
+                            .friendRelationStatus(accountRelationService.getRelationAccounts(currentAccount.getId(), account.getId()))
                             .build();
                     return AccountEntryResponseDto.builder()
                             .account(simple)

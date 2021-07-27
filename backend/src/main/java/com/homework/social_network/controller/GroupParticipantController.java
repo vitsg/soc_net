@@ -32,12 +32,12 @@ public class GroupParticipantController {
     }
 
     @GetMapping("/get-account-groups/{id}")
-    public GroupsResponseDto getAccountGroups(@PathVariable UUID id, @RequestParam int start, @RequestParam int end) {
-        return groupParticipantService.getAccountGroups(id, start, end);
+    public GroupsResponseDto getAccountGroups(@PathVariable UUID id, @RequestParam int start, @RequestParam int end, @RequestParam(required = false) String name) {
+        return groupParticipantService.getAccountGroups(id, start, end, name);
     }
 
     @GetMapping("/get-group-accounts/{id}")
-    public AccountsResponseDto getGroupAccounts(@PathVariable UUID id, @RequestParam int start, @RequestParam int end) {
-        return groupParticipantService.getGroupAccounts(id, start, end);
+    public AccountsResponseDto getGroupAccounts(@PathVariable UUID id, @RequestParam int start, @RequestParam int end, @RequestParam(required = false) String name) {
+        return groupParticipantService.getGroupAccounts(id, start, end, name);
     }
 }

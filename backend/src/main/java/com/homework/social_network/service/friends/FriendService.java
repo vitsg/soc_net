@@ -1,21 +1,26 @@
 package com.homework.social_network.service.friends;
 
-import com.homework.social_network.dto.response.account.AccountWithPhotoPageResponseDto;
 import com.homework.social_network.dto.response.account.info.AccountMetainfoResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountEntryResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountSimpleResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountsResponseDto;
-import com.homework.social_network.entity.Account;
 import com.homework.social_network.enums.FriendRelationStatus;
+import com.homework.social_network.repo.AccountRepository;
 import com.homework.social_network.service.AccountService;
-import com.homework.social_network.service.FriendRequestService;
+import com.homework.social_network.service.request.FriendRequestService;
+import com.homework.social_network.specification.account.friend.FriendSpecification;
+import com.homework.social_network.specification.account.friend.InputFriendSpecification;
+import com.homework.social_network.specification.account.friend.OutputFriendSpecification;
+import com.homework.social_network.utils.CustomPageable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,10 +38,12 @@ public class FriendService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     @Transactional
     public FriendRelationStatus addFriend(UUID targetId) {
-        Account target = accountService.getAccount(targetId);
-        return friendRequestService.addFriendRequest(target);
+        return friendRequestService.addFriendRequest(targetId);
     }
 
     @Transactional
@@ -51,11 +58,14 @@ public class FriendService {
 
     @Transactional
     public AccountsResponseDto getFriends(UUID targetAccountId, int start, int end, String name) {
-        List<UUID> accountIds = friendRequestService.getFriendIds(targetAccountId, start, end);
-        Map<UUID, Account> batch = accountService.getBatch(accountIds);
-        List<AccountEntryResponseDto> accounts = accountIds.stream()
-                .map(id -> {
-                    Account account = batch.get(id);
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(Sort.Order.asc("lastName"));
+        orders.add(Sort.Order.asc("firstName"));
+        Sort sort = Sort.by(orders);
+        Pageable pageable = new CustomPageable(start, end - start, sort);
+        List<AccountEntryResponseDto> accounts = accountRepository.findAll(FriendSpecification.friendSpecification(targetAccountId, name), pageable)
+                .stream()
+                .map(account -> {
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
                     simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
                     AccountMetainfoResponseDto info = AccountMetainfoResponseDto.builder()
@@ -69,21 +79,24 @@ public class FriendService {
                 .collect(Collectors.toList());
         return AccountsResponseDto.builder()
                 .accounts(accounts)
-                .totalSize(friendRequestService.countFriends(targetAccountId))
+                .totalSize((int) accountRepository.count(FriendSpecification.countFriendSpecification(targetAccountId, name)))
                 .build();
     }
 
     @Transactional
-    public AccountsResponseDto getInputFriends(UUID accountId, int start, int end) {
-        List<UUID> groupIds = friendRequestService.getInputFriends(accountId, start, end);
-        Map<UUID, Account> batch = accountService.getBatch(groupIds);
-        List<AccountEntryResponseDto> accounts = groupIds.stream()
-                .map(id -> {
-                    Account account = batch.get(id);
+    public AccountsResponseDto getInputFriends(UUID accountId, int start, int end, String name) {
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(Sort.Order.asc("lastName"));
+        orders.add(Sort.Order.asc("firstName"));
+        Sort sort = Sort.by(orders);
+        Pageable pageable = new CustomPageable(start, end - start, sort);
+        List<AccountEntryResponseDto> accounts = accountRepository.findAll(InputFriendSpecification.inputFriendSpecification(accountId, name), pageable)
+                .stream()
+                .map(account -> {
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
                     simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
                     AccountMetainfoResponseDto info = AccountMetainfoResponseDto.builder()
-                            .friendRelationStatus(FriendRelationStatus.INPUT)
+                            .friendRelationStatus(FriendRelationStatus.FULL)
                             .build();
                     return AccountEntryResponseDto.builder()
                             .account(simple)
@@ -93,21 +106,24 @@ public class FriendService {
                 .collect(Collectors.toList());
         return AccountsResponseDto.builder()
                 .accounts(accounts)
-                .totalSize(friendRequestService.countInputFriends(accountId))
+                .totalSize((int) accountRepository.count(InputFriendSpecification.countInputFriendSpecification(accountId, name)))
                 .build();
     }
 
     @Transactional
-    public AccountsResponseDto getOutputFriends(UUID accountId, int start, int end) {
-        List<UUID> groupIds = friendRequestService.getOutputFriendIds(accountId, start, end);
-        Map<UUID, Account> batch = accountService.getBatch(groupIds);
-        List<AccountEntryResponseDto> accounts = groupIds.stream()
-                .map(id -> {
-                    Account account = batch.get(id);
+    public AccountsResponseDto getOutputFriends(UUID accountId, int start, int end, String name) {
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(Sort.Order.asc("lastName"));
+        orders.add(Sort.Order.asc("firstName"));
+        Sort sort = Sort.by(orders);
+        Pageable pageable = new CustomPageable(start, end - start, sort);
+        List<AccountEntryResponseDto> accounts = accountRepository.findAll(OutputFriendSpecification.outputFriendSpecification(accountId, name), pageable)
+                .stream()
+                .map(account -> {
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
                     simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
                     AccountMetainfoResponseDto info = AccountMetainfoResponseDto.builder()
-                            .friendRelationStatus(FriendRelationStatus.OUTPUT)
+                            .friendRelationStatus(FriendRelationStatus.FULL)
                             .build();
                     return AccountEntryResponseDto.builder()
                             .account(simple)
@@ -117,7 +133,8 @@ public class FriendService {
                 .collect(Collectors.toList());
         return AccountsResponseDto.builder()
                 .accounts(accounts)
-                .totalSize(friendRequestService.countOutputFriends(accountId))
+                .totalSize((int) accountRepository.count(OutputFriendSpecification.countOutputFriendSpecification(accountId, name)))
                 .build();
     }
+
 }

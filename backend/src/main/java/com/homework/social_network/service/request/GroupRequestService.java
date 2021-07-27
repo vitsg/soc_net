@@ -1,7 +1,5 @@
-package com.homework.social_network.service;
+package com.homework.social_network.service.request;
 
-import com.homework.social_network.entity.Account;
-import com.homework.social_network.entity.Group;
 import com.homework.social_network.entity.GroupJoin;
 import com.homework.social_network.enums.GroupRelationStatus;
 import com.homework.social_network.repo.GroupRequestRepository;
@@ -22,10 +20,10 @@ public class GroupRequestService {
     private GroupRequestRepository groupRequestRepository;
 
     @Transactional
-    public GroupRelationStatus joinGroup(Account account, Group target, GroupRelationStatus status) {
+    public GroupRelationStatus joinGroup(UUID currentAccountId, UUID targetGroupId, GroupRelationStatus status) {
         GroupJoin groupJoin = new GroupJoin();
-        groupJoin.setOwnerAccount(account);
-        groupJoin.setTargetGroup(target);
+        groupJoin.setOwnerAccountId(currentAccountId);
+        groupJoin.setTargetGroupId(targetGroupId);
         groupJoin.setCreateDate(LocalDateTime.now());
         groupJoin.setStatus(status);
         groupRequestRepository.save(groupJoin);
@@ -40,27 +38,11 @@ public class GroupRequestService {
         return GroupRelationStatus.NONE;
     }
 
-    @Transactional
-    public List<GroupJoin> getAccountGroupIds(UUID accountId, int start, int end) {
-        return groupRequestRepository.findByOwnerAccountId(accountId, start, end - start);
-    }
-
-    @Transactional
-    public List<GroupJoin> getGroupAccountIds(UUID groupId, int start, int end) {
-        return groupRequestRepository.findByTargetGroupId(groupId, start, end - start);
-    }
-
-    @Transactional
-    public int countAccountGroups(UUID accountId) {
-        return groupRequestRepository.countByOwnerAccountId(accountId);
-    }
-
-    @Transactional
-    public int countGroupAccounts(UUID accountId) {
-        return groupRequestRepository.countByTargetGroupId(accountId);
-    }
-
     public GroupJoin getRequestGroup(UUID main, UUID target) {
         return groupRequestRepository.findByOwnerAccountIdAndTargetGroupId(main, target);
+    }
+
+    public List<GroupJoin> getRequestGroups(UUID main, List<UUID> targetIds) {
+        return groupRequestRepository.findByOwnerAccountIdAndTargetGroupIdIn(main, targetIds);
     }
 }

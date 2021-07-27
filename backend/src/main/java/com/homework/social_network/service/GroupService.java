@@ -16,6 +16,8 @@ import com.homework.social_network.entity.Photo;
 import com.homework.social_network.enums.GroupRelationStatus;
 import com.homework.social_network.repo.GroupRepository;
 import com.homework.social_network.repo.PhotoRepository;
+import com.homework.social_network.service.relation.GroupRelationService;
+import com.homework.social_network.service.request.GroupRequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +63,7 @@ public class GroupService {
         group.setOwner(currentAccount);
         Group savedGroup = groupRepository.save(group);
         setPhoto(savedGroup, groupCreateRequestDto.getPhoto());
-        groupRequestService.joinGroup(currentAccount, savedGroup, GroupRelationStatus.OWNER);
+        groupRequestService.joinGroup(currentAccount.getId(), savedGroup.getId(), GroupRelationStatus.OWNER);
         GroupWithPhotoPageResponseDto dto = modelMapper.map(savedGroup, GroupWithPhotoPageResponseDto.class);
         dto.setPhoto(getOrDefaultContentPhoto(savedGroup.getPhoto()));
         return dto;

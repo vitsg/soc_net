@@ -8,25 +8,31 @@ import com.homework.social_network.dto.response.group.info.GroupMetainfoResponse
 import com.homework.social_network.dto.response.group.list.GroupEntryResponseDto;
 import com.homework.social_network.dto.response.group.list.GroupSimpleResponseDto;
 import com.homework.social_network.dto.response.group.list.GroupsResponseDto;
-import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.Group;
 import com.homework.social_network.entity.GroupJoin;
 import com.homework.social_network.enums.GroupRelationStatus;
-import com.homework.social_network.service.AccountRelationService;
+import com.homework.social_network.repo.AccountRepository;
+import com.homework.social_network.repo.GroupRepository;
+import com.homework.social_network.service.relation.AccountRelationService;
 import com.homework.social_network.service.AccountService;
-import com.homework.social_network.service.GroupRequestService;
-import com.homework.social_network.service.GroupService;
+import com.homework.social_network.service.request.GroupRequestService;
+import com.homework.social_network.specification.account.GroupParticipantSpecification;
+import com.homework.social_network.specification.group.JoinGroupSpecification;
+import com.homework.social_network.utils.CustomPageable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.homework.social_network.utils.Utils.getCurrentAccount;
+import static com.homework.social_network.utils.Utils.getCurrentAccountId;
 import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
 
 @Service
@@ -39,19 +45,21 @@ public class GroupParticipantService {
     private AccountService accountService;
 
     @Autowired
-    private GroupService groupService;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private AccountRelationService accountRelationService;
 
+    @Autowired
+    private GroupRepository groupRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
     @Transactional
     public GroupRelationStatus joinGroup(UUID targetId) {
-        Account currentAccount = getCurrentAccount();
-        Group targetGroup = groupService.getGroup(targetId);
-        return groupRequestService.joinGroup(currentAccount, targetGroup, GroupRelationStatus.PARTICIPANT);
+        UUID currentAccountId = getCurrentAccountId();
+        return groupRequestService.joinGroup(currentAccountId, targetId, GroupRelationStatus.PARTICIPANT);
     }
 
     @Transactional
@@ -60,18 +68,19 @@ public class GroupParticipantService {
     }
 
     @Transactional
-    public GroupsResponseDto getAccountGroups(UUID accountId, int start, int end) {
-        List<GroupJoin> groupJoins = groupRequestService.getAccountGroupIds(accountId, start, end);
-        Map<UUID, Group> batch = groupService.getBatch(groupJoins.stream()
-                .map(gr -> gr.getTargetGroup().getId())
-                .collect(Collectors.toList()));
-        List<GroupEntryResponseDto> groups = groupJoins.stream()
-                .map(join -> {
-                    Group group = batch.get(join.getTargetGroup().getId());
+    public GroupsResponseDto getAccountGroups(UUID accountId, int start, int end, String name) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "name");
+        Pageable pageable = new CustomPageable(start, end - start, sort);
+        List<Group> groups = groupRepository.findAll(JoinGroupSpecification.joinGroupSpecification(accountId, name), pageable).toList();
+        Map<UUID, GroupRelationStatus> statuses = groupRequestService.getRequestGroups(accountId, groups.stream().map(Group::getId).collect(Collectors.toList()))
+                .stream()
+                .collect(Collectors.toMap(GroupJoin::getTargetGroupId, GroupJoin::getStatus));
+        List<GroupEntryResponseDto> groupEntry = groups.stream()
+                .map(group -> {
                     GroupSimpleResponseDto simple = modelMapper.map(group, GroupSimpleResponseDto.class);
                     simple.setPhoto(getOrDefaultContentPhoto(group.getPhoto()));
                     GroupMetainfoResponseDto info = GroupMetainfoResponseDto.builder()
-                            .groupRelationStatus(join.getStatus())
+                            .groupRelationStatus(statuses.get(group.getId()))
                             .build();
                     return GroupEntryResponseDto.builder()
                             .group(simple)
@@ -80,25 +89,26 @@ public class GroupParticipantService {
                 })
                 .collect(Collectors.toList());
         return GroupsResponseDto.builder()
-                .groups(groups)
-                .totalSize(groupRequestService.countAccountGroups(accountId))
+                .groups(groupEntry)
+                .totalSize((int) groupRepository.count(JoinGroupSpecification.countJoinGroupSpecification(accountId, name)))
                 .build();
     }
 
     @Transactional
-    public AccountsResponseDto getGroupAccounts(UUID groupId, int start, int end) {
-        Account currentAccount = getCurrentAccount();
-        List<GroupJoin> groupJoins = groupRequestService.getGroupAccountIds(groupId, start, end);
-        Map<UUID, Account> batch = accountService.getBatch(groupJoins.stream()
-                .map(gr -> gr.getOwnerAccount().getId())
-                .collect(Collectors.toList()));
-        List<AccountEntryResponseDto> accounts = groupJoins.stream()
-                .map(join -> {
-                    Account account = batch.get(join.getOwnerAccount().getId());
+    public AccountsResponseDto getGroupAccounts(UUID groupId, int start, int end, String name) {
+        UUID currentAccountId = getCurrentAccountId();
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(Sort.Order.asc("lastName"));
+        orders.add(Sort.Order.asc("firstName"));
+        Sort sort = Sort.by(orders);
+        Pageable pageable = new CustomPageable(start, end - start, sort);
+        List<AccountEntryResponseDto> accounts = accountRepository.findAll(GroupParticipantSpecification.groupParticipantSpecification(groupId, name), pageable)
+                .stream()
+                .map(account -> {
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
                     simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
                     AccountMetainfoResponseDto info = AccountMetainfoResponseDto.builder()
-                            .friendRelationStatus(accountRelationService.getRelationAccounts(currentAccount, account))
+                            .friendRelationStatus(accountRelationService.getRelationAccounts(currentAccountId, account.getId()))
                             .build();
                     return AccountEntryResponseDto.builder()
                             .account(simple)
@@ -108,7 +118,7 @@ public class GroupParticipantService {
                 .collect(Collectors.toList());
         return AccountsResponseDto.builder()
                 .accounts(accounts)
-                .totalSize(groupRequestService.countGroupAccounts(groupId))
+                .totalSize((int) accountRepository.count(GroupParticipantSpecification.countGroupParticipantSpecification(groupId, name)))
                 .build();
     }
 }

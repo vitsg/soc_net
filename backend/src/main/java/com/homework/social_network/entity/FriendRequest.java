@@ -17,12 +17,10 @@ import java.util.UUID;
 @Table(name = "friend_request", indexes = @Index(name = "unique_friend_request", columnList = "owner_account_id, target_account_id", unique = true))
 public class FriendRequest extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "owner_account_id")
-    private Account ownerAccount;
+    @Column(name = "owner_account_id", nullable = false)
+    private UUID ownerAccountId;
 
-    @ManyToOne
-    @JoinColumn(name = "target_account_id")
-    private Account targetAccount;
+    @Column(name = "target_account_id", nullable = false)
+    private UUID targetAccountId;
 
 }

@@ -1,8 +1,9 @@
-package com.homework.social_network.service;
+package com.homework.social_network.service.relation;
 
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.Group;
 import com.homework.social_network.enums.GroupRelationStatus;
+import com.homework.social_network.service.request.GroupRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
