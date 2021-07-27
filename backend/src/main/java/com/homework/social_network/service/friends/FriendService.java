@@ -96,7 +96,7 @@ public class FriendService {
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
                     simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
                     AccountMetainfoResponseDto info = AccountMetainfoResponseDto.builder()
-                            .friendRelationStatus(FriendRelationStatus.FULL)
+                            .friendRelationStatus(FriendRelationStatus.INPUT)
                             .build();
                     return AccountEntryResponseDto.builder()
                             .account(simple)
@@ -123,7 +123,7 @@ public class FriendService {
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
                     simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
                     AccountMetainfoResponseDto info = AccountMetainfoResponseDto.builder()
-                            .friendRelationStatus(FriendRelationStatus.FULL)
+                            .friendRelationStatus(FriendRelationStatus.OUTPUT)
                             .build();
                     return AccountEntryResponseDto.builder()
                             .account(simple)
