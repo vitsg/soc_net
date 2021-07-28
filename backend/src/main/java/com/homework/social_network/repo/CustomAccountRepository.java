@@ -8,8 +8,6 @@ import java.util.UUID;
 
 public interface CustomAccountRepository {
 
-    List<Account> getAllAccounts(int start, int limit);
-
     List<Account> findAllByIds(List<UUID> ids);
 
 }

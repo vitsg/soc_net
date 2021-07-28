@@ -46,7 +46,7 @@ public class GroupController {
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public GroupsResponseDto getGroups(@RequestParam int start, @RequestParam int end) {
-        return groupService.getAllGroups(start, end);
+    public GroupsResponseDto getGroups(@RequestParam int start, @RequestParam int end, @RequestParam(required = false) String name) {
+        return groupService.getAllGroups(start, end, name);
     }
 }

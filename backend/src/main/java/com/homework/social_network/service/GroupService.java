@@ -18,9 +18,13 @@ import com.homework.social_network.repo.GroupRepository;
 import com.homework.social_network.repo.PhotoRepository;
 import com.homework.social_network.service.relation.GroupRelationService;
 import com.homework.social_network.service.request.GroupRequestService;
+import com.homework.social_network.specification.group.AllGroupSpecificationHepler;
+import com.homework.social_network.utils.CustomPageable;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -147,9 +151,11 @@ public class GroupService {
     }
 
     @Transactional
-    public GroupsResponseDto getAllGroups(int start, int end) {
+    public GroupsResponseDto getAllGroups(int start, int end, String name) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "name");
+        Pageable pageable = new CustomPageable(start, end - start, sort);
         Account currentAccount = getCurrentAccount();
-        List<GroupEntryResponseDto> groups = groupRepository.getAllGroups(start, end - start)
+        List<GroupEntryResponseDto> groups = groupRepository.findAll(AllGroupSpecificationHepler.allGroupSpecification(name), pageable)
                 .stream()
                 .map(group -> {
                     GroupSimpleResponseDto simple = modelMapper.map(group, GroupSimpleResponseDto.class);
@@ -165,7 +171,7 @@ public class GroupService {
                 .collect(Collectors.toList());
         return GroupsResponseDto.builder()
                 .groups(groups)
-                .totalSize((int) groupRepository.count())
+                .totalSize((int) groupRepository.count(AllGroupSpecificationHepler.countAllGroupSpecification(name)))
                 .build();
     }
 

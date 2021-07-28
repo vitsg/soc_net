@@ -18,15 +18,20 @@ import com.homework.social_network.repo.AccountRepository;
 import com.homework.social_network.repo.PhotoRepository;
 import com.homework.social_network.service.relation.AccountRelationService;
 import com.homework.social_network.service.request.FriendRequestService;
+import com.homework.social_network.specification.account.AllAccountSpecificationHepler;
+import com.homework.social_network.utils.CustomPageable;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -154,9 +159,14 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountsResponseDto getAllAccount(int start, int end) {
+    public AccountsResponseDto getAllAccount(int start, int end, String name) {
         Account currentAccount = getCurrentAccount();
-        List<AccountEntryResponseDto> accounts = accountRepository.getAllAccounts(start, end - start)
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(Sort.Order.asc("lastName"));
+        orders.add(Sort.Order.asc("firstName"));
+        Sort sort = Sort.by(orders);
+        Pageable pageable = new CustomPageable(start, end - start, sort);
+        List<AccountEntryResponseDto> accounts = accountRepository.findAll(AllAccountSpecificationHepler.allAccountSpecification(name), pageable)
                 .stream()
                 .map(account -> {
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
@@ -172,7 +182,7 @@ public class AccountService {
                 .collect(Collectors.toList());
         return AccountsResponseDto.builder()
                 .accounts(accounts)
-                .totalSize((int) accountRepository.count())
+                .totalSize((int) accountRepository.count(AllAccountSpecificationHepler.countAllAccountSpecification(name)))
                 .build();
     }
 

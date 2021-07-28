@@ -8,7 +8,5 @@ import java.util.UUID;
 
 public interface CustomGroupRepository {
 
-    List<Group> getAllGroups(int start, int limit);
-
     List<Group> findAllByIds(List<UUID> ids);
 }

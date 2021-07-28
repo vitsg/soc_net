@@ -58,7 +58,7 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public AccountsResponseDto getAccounts(@RequestParam int start, @RequestParam int end) {
-        return accountService.getAllAccount(start, end);
+    public AccountsResponseDto getAccounts(@RequestParam int start, @RequestParam int end, @RequestParam(required = false) String name) {
+        return accountService.getAllAccount(start, end, name);
     }
 }
