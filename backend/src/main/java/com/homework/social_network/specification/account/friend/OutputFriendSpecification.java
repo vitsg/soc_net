@@ -21,7 +21,9 @@ public class OutputFriendSpecification {
 
     public static Specification<Account> outputFriendSpecification(UUID ownerAccountId, String name) {
         return (root, criteriaQuery, criteriaBuilder) -> {
-            root.fetch("photo", JoinType.LEFT);
+            if (criteriaQuery.getResultType() == Account.class) {
+                root.fetch("photo", JoinType.LEFT);
+            }
             return getOutputFriendPredicate(criteriaBuilder, root, criteriaQuery, name, ownerAccountId);
         };
     }

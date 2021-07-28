@@ -1,5 +1,6 @@
 package com.homework.social_network.specification.group;
 
+import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.Group;
 import com.homework.social_network.entity.GroupJoin;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +22,9 @@ public class JoinGroupSpecification {
 
     public static Specification<Group> joinGroupSpecification(UUID ownerAccountId, String name) {
         return (root, criteriaQuery, criteriaBuilder) -> {
-            root.fetch("photo", JoinType.LEFT);
+            if (criteriaQuery.getResultType() == Group.class) {
+                root.fetch("photo", JoinType.LEFT);
+            }
             return getJoinGroupPredicate(criteriaBuilder, root, criteriaQuery, name, ownerAccountId);
         };
     }

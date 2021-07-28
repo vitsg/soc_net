@@ -21,7 +21,9 @@ public class FriendSpecification {
 
     public static Specification<Account> friendSpecification(UUID ownerAccountId, String name) {
         return (root, criteriaQuery, criteriaBuilder) -> {
-            root.fetch("photo", JoinType.LEFT);
+            if (criteriaQuery.getResultType() == Account.class) {
+                root.fetch("photo", JoinType.LEFT);
+            }
             return getFriendPredicate(criteriaBuilder, root, criteriaQuery, name, ownerAccountId);
         };
     }

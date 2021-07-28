@@ -22,7 +22,9 @@ public class GroupParticipantSpecification {
 
     public static Specification<Account> groupParticipantSpecification(UUID targetId, String name) {
         return (root, criteriaQuery, criteriaBuilder) -> {
-            root.fetch("photo", JoinType.LEFT);
+            if (criteriaQuery.getResultType() == Account.class) {
+                root.fetch("photo", JoinType.LEFT);
+            }
             return getGroupParticipantPredicate(criteriaBuilder, root, criteriaQuery, name, targetId);
         };
     }

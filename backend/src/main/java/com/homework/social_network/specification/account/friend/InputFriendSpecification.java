@@ -21,7 +21,9 @@ public class InputFriendSpecification {
 
     public static Specification<Account> inputFriendSpecification(UUID ownerAccountId, String name) {
         return (root, criteriaQuery, criteriaBuilder) -> {
-            root.fetch("photo", JoinType.LEFT);
+            if (criteriaQuery.getResultType() == Account.class) {
+                root.fetch("photo", JoinType.LEFT);
+            }
             return getInputFriendPredicate(criteriaBuilder, root, criteriaQuery, name, ownerAccountId);
         };
     }
