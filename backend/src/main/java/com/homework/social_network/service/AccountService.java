@@ -2,6 +2,7 @@ package com.homework.social_network.service;
 
 import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
+import com.homework.social_network.dto.request.ChangeCredentialsRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
 import com.homework.social_network.dto.response.account.list.AccountEntryResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountSimpleResponseDto;
@@ -21,6 +22,7 @@ import com.homework.social_network.service.request.FriendRequestService;
 import com.homework.social_network.specification.account.AllAccountSpecificationHepler;
 import com.homework.social_network.utils.CustomPageable;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +42,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.homework.social_network.utils.Utils.getCurrentAccount;
+import static com.homework.social_network.utils.Utils.getCurrentAccountId;
 import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
+import static com.homework.social_network.utils.Utils.setPrincipal;
 
 @Service
 @Slf4j
@@ -61,13 +65,13 @@ public class AccountService {
     @Autowired
     private AccountRelationService accountRelationService;
 
-    @Autowired
-    private FriendRequestService friendRequestService;
-
-
     @Transactional
     public AccountPageResponseDto registration(AccountRegistrationRequestDto accountRegistrationRequestDto) {
         Account account = modelMapper.map(accountRegistrationRequestDto, Account.class);
+        String registrationEmail = account.getEmail();
+        if (accountRepository.findByEmail(registrationEmail) != null) {
+            throw new RuntimeException("Email " + registrationEmail + " уже занят");
+        }
         account.setRole(UserRole.USER);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         account.setCreateDate(LocalDateTime.now());
@@ -88,6 +92,10 @@ public class AccountService {
 
     @Transactional
     public AccountPageResponseDto update(AccountUpdateRequestDto accountUpdateRequestDto) {
+        UUID currentAccountId = getCurrentAccountId();
+        if (!currentAccountId.equals(accountUpdateRequestDto.getId())) {
+            throw new RuntimeException("Нельзя менять данные чужого аккаунта");
+        }
         Account account = accountRepository.getById(accountUpdateRequestDto.getId());
         modelMapper.map(accountUpdateRequestDto, account);
         return modelMapper.map(accountRepository.save(account), AccountPageResponseDto.class);
@@ -191,6 +199,38 @@ public class AccountService {
         return accountRepository.findAllByIds(ids)
                 .stream()
                 .collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
+    }
+
+    @Transactional
+    public void changeCredentials(ChangeCredentialsRequestDto changeCredentialsRequestDto) {
+        UUID currentAccountId = getCurrentAccountId();
+        String oldPassword = changeCredentialsRequestDto.getOldPassword();
+        String newPassword = changeCredentialsRequestDto.getNewPassword();
+        if (!currentAccountId.equals(changeCredentialsRequestDto.getAccountId())) {
+            throw new RuntimeException("Нельзя менять данные чужого аккаунта");
+        }
+        Account account = accountRepository.getById(changeCredentialsRequestDto.getAccountId());
+        String newEmail = Optional.ofNullable(changeCredentialsRequestDto.getEmail())
+                .filter(StringUtils::isNotEmpty)
+                .orElseThrow(() -> new RuntimeException("Email не может быть пустым"));
+        if (!account.getEmail().equals(newEmail)) {
+            if (accountRepository.findByEmail(newEmail) != null) {
+                throw new RuntimeException("Такой email уже занят");
+            }
+            account.setEmail(newEmail);
+        }
+
+        if (StringUtils.isNotEmpty(oldPassword)) {
+            if (!account.getPassword().equals(passwordEncoder.encode(oldPassword))) {
+                throw new RuntimeException("Старый пароль введен неправильно");
+            }
+            if (StringUtils.isEmpty(newPassword)) {
+                throw new RuntimeException("Новый пароль не может быть пустым");
+            }
+            account.setPassword(passwordEncoder.encode(newPassword));
+        }
+        accountRepository.save(account);
+        setPrincipal(account);
     }
 
 }

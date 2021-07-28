@@ -12,7 +12,6 @@ public class AccountUpdateRequestDto {
     private UUID id;
     private String firstName;
     private String lastName;
-    private String email;
     private LocalDate birthDate;
     private Sex sex;
     private String city;

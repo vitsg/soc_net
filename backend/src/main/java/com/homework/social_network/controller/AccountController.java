@@ -2,6 +2,7 @@ package com.homework.social_network.controller;
 
 import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
+import com.homework.social_network.dto.request.ChangeCredentialsRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
 import com.homework.social_network.dto.response.account.page.AccountPageResponseDto;
 import com.homework.social_network.dto.response.account.page.AccountPageInfoResponseDto;
@@ -60,5 +61,10 @@ public class AccountController {
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public AccountsResponseDto getAccounts(@RequestParam int start, @RequestParam int end, @RequestParam(required = false) String name) {
         return accountService.getAllAccount(start, end, name);
+    }
+
+    @PostMapping("/change-credentials")
+    public void changeCredentials(@RequestBody ChangeCredentialsRequestDto changeCredentialsRequestDto) {
+
     }
 }
