@@ -15,13 +15,13 @@ import static java.util.Objects.requireNonNull;
 
 public class Utils {
 
-    public static void setPrincipal(Account account) {
-        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(account, currentAuth.getCredentials(),
-                account.getAuthorities());
-        auth.setDetails(currentAuth.getDetails());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }
+//    public static void setPrincipal(Account account) {
+//        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+//        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(account, currentAuth.getCredentials(),
+//                account.getAuthorities());
+//        auth.setDetails(currentAuth.getDetails());
+//        SecurityContextHolder.getContext().setAuthentication(auth);
+//    }
 
     public static byte[] getDefaultImage() {
         try {

@@ -44,7 +44,6 @@ import java.util.stream.Collectors;
 import static com.homework.social_network.utils.Utils.getCurrentAccount;
 import static com.homework.social_network.utils.Utils.getCurrentAccountId;
 import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
-import static com.homework.social_network.utils.Utils.setPrincipal;
 
 @Service
 @Slf4j
@@ -230,7 +229,6 @@ public class AccountService {
             account.setPassword(passwordEncoder.encode(newPassword));
         }
         accountRepository.save(account);
-        setPrincipal(account);
     }
 
 }

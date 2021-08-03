@@ -65,6 +65,6 @@ public class AccountController {
 
     @PostMapping("/change-credentials")
     public void changeCredentials(@RequestBody ChangeCredentialsRequestDto changeCredentialsRequestDto) {
-
+        accountService.changeCredentials(changeCredentialsRequestDto);
     }
 }
