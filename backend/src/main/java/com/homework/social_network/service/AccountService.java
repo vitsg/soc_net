@@ -220,7 +220,7 @@ public class AccountService {
         }
 
         if (StringUtils.isNotEmpty(oldPassword)) {
-            if (passwordEncoder.matches(oldPassword, account.getPassword())) {
+            if (passwordEncoder.matches(account.getPassword(), oldPassword)) {
                 throw new RuntimeException("Старый пароль введен неправильно");
             }
             if (StringUtils.isEmpty(newPassword)) {
