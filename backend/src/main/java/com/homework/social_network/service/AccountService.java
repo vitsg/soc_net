@@ -15,6 +15,7 @@ import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.BaseEntity;
 import com.homework.social_network.entity.Photo;
 import com.homework.social_network.enums.UserRole;
+import com.homework.social_network.exception.CustomException;
 import com.homework.social_network.repo.AccountRepository;
 import com.homework.social_network.repo.PhotoRepository;
 import com.homework.social_network.service.relation.AccountRelationService;
@@ -69,7 +70,7 @@ public class AccountService {
         Account account = modelMapper.map(accountRegistrationRequestDto, Account.class);
         String registrationEmail = account.getEmail();
         if (accountRepository.findByEmail(registrationEmail) != null) {
-            throw new RuntimeException("Email " + registrationEmail + " уже занят");
+            throw new CustomException("REGISTRATION_EMAIL_IS_EXISTS", "Email " + registrationEmail + " уже занят");
         }
         account.setRole(UserRole.USER);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
@@ -206,25 +207,25 @@ public class AccountService {
         String oldPassword = changeCredentialsRequestDto.getOldPassword();
         String newPassword = changeCredentialsRequestDto.getNewPassword();
         if (!currentAccountId.equals(changeCredentialsRequestDto.getAccountId())) {
-            throw new RuntimeException("Нельзя менять данные чужого аккаунта");
+            throw new CustomException("CHANGE_CREDENTIALS_REJECT_ANOTHER_ACCOUNT", "Нельзя менять данные чужого аккаунта");
         }
         Account account = accountRepository.getById(changeCredentialsRequestDto.getAccountId());
         String newEmail = Optional.ofNullable(changeCredentialsRequestDto.getEmail())
                 .filter(StringUtils::isNotEmpty)
-                .orElseThrow(() -> new RuntimeException("Email не может быть пустым"));
+                .orElseThrow(() -> new CustomException("CHANGE_CREDENTIALS_EMPTY_PASSWORD_REJECT", "Email не может быть пустым"));
         if (!account.getEmail().equals(newEmail)) {
             if (accountRepository.findByEmail(newEmail) != null) {
-                throw new RuntimeException("Такой email уже занят");
+                throw new CustomException("CHANGE_CREDENTIALS_EMAIL_IS_EXISTS", "Такой email уже занят");
             }
             account.setEmail(newEmail);
         }
 
         if (StringUtils.isNotEmpty(oldPassword)) {
             if (passwordEncoder.matches(account.getPassword(), oldPassword)) {
-                throw new RuntimeException("Старый пароль введен неправильно");
+                throw new CustomException("CHANGE_CREDENTIALS_INCORRECT_OLD_PASSWORD", "Старый пароль введен неправильно");
             }
             if (StringUtils.isEmpty(newPassword)) {
-                throw new RuntimeException("Новый пароль не может быть пустым");
+                throw new CustomException("CHANGE_CREDENTIALS_EMPTY_NEW_PASSWORD", "Новый пароль не может быть пустым");
             }
             account.setPassword(passwordEncoder.encode(newPassword));
         }

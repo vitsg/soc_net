@@ -47,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     httpServletResponse.setCharacterEncoding("UTF-8");
                     httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
                     Map<String, Object> data = new HashMap<>();
-                    data.put("error", "Неправильный логин или пароль");
+                    data.put("error", "Incorrect login or password");
+                    data.put("code", "INCORRECT_LOGIN_OR_PASSWORD");
                     httpServletResponse.getWriter()
                             .println(new ObjectMapper().writeValueAsString(data));
                 })
