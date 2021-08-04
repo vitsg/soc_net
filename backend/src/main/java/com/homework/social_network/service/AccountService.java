@@ -202,10 +202,7 @@ public class AccountService {
 
     @Transactional
     public void changeCredentials(ChangeCredentialsRequestDto changeCredentialsRequestDto) {
-        log.info("START CHANGE CREDENTIALS");
         UUID currentAccountId = getCurrentAccountId();
-        log.info("Current account id {}", currentAccountId.toString());
-        log.info("Changed account id {}", changeCredentialsRequestDto.getAccountId());
         String oldPassword = changeCredentialsRequestDto.getOldPassword();
         String newPassword = changeCredentialsRequestDto.getNewPassword();
         if (!currentAccountId.equals(changeCredentialsRequestDto.getAccountId())) {
