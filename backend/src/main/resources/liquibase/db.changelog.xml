@@ -221,5 +221,33 @@
         <addNotNullConstraint columnDataType="UUID" columnName="target_account_id" tableName="friend_request"
                               validate="true"/>
     </changeSet>
+    <changeSet id="1628272207685-3" author="vitsg (generated)">
+        <createTable tableName="messages_on_wall">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_messages_on_wall"/>
+            </column>
+            <column name="create_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_id" type="UUID"/>
+            <column name="destination_id" type="UUID"/>
+            <column name="content" type="CLOB"/>
+            <column name="message_on_wall_type" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1628272207685-4" author="vitsg (generated)">
+        <createTable tableName="private_messages">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_private_messages"/>
+            </column>
+            <column name="create_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_id" type="UUID"/>
+            <column name="destination_id" type="UUID"/>
+            <column name="content" type="CLOB"/>
+            <column name="accepted" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
