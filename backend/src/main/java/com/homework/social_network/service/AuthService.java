@@ -5,6 +5,7 @@ import com.homework.social_network.dto.response.CurrentStatusDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.enums.Access;
 import com.homework.social_network.repo.AccountRepository;
+import com.homework.social_network.service.message.PrivateMessageService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,9 @@ public class AuthService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private PrivateMessageService privateMessageService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -50,6 +54,7 @@ public class AuthService {
         CurrentStatusDto currentStatusDto = new CurrentStatusDto();
         currentStatusDto.setCurrentAccount(modelMapper.map(account, AccountPageResponseDto.class));
         currentStatusDto.setAccesses(accesses);
+        currentStatusDto.setUnacceptedMessages(privateMessageService.getUnacceptedMessages());
         return currentStatusDto;
     }
 }
