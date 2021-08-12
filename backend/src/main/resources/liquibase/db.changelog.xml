@@ -5,6 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
+    <include file="db/changelog/2021/08/12-01-changelog.xml"/>
     <changeSet id="1.0.0" author="v.goncharenko">
         <createTable tableName="account">
             <column name="id" type="uuid">
