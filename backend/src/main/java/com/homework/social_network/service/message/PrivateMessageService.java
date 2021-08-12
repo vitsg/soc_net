@@ -35,7 +35,7 @@ public class PrivateMessageService {
         UUID currentAccountId = getCurrentAccountId();
         Pageable pageable = new CustomPageable(start, end - start, Sort.by("createDate"));
         LocalDateTime startLoadTimeInternal = Optional.ofNullable(startLoadTime).orElse(LocalDateTime.now());
-        List<PrivateMessageResponseDto> messages = privateMessageRepository.getPrivateMessages(currentAccountId, targetAccountId, startLoadTime, pageable)
+        List<PrivateMessageResponseDto> messages = privateMessageRepository.getPrivateMessages(currentAccountId, targetAccountId, startLoadTimeInternal, pageable)
                 .stream()
                 .map(m -> modelMapper.map(m, PrivateMessageResponseDto.class))
                 .collect(Collectors.toList());
