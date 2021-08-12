@@ -33,7 +33,7 @@ public class PrivateMessageService {
     @Transactional
     public PrivateMessagesResponseDto getPrivateMessages(UUID targetAccountId, LocalDateTime startLoadTime, int start, int end) {
         UUID currentAccountId = getCurrentAccountId();
-        Pageable pageable = new CustomPageable(start, end - start, Sort.by("createDate"));
+        Pageable pageable = new CustomPageable(start, end - start, Sort.by("sendDate"));
         LocalDateTime startLoadTimeInternal = Optional.ofNullable(startLoadTime).orElse(LocalDateTime.now());
         List<PrivateMessageResponseDto> messages = privateMessageRepository.getPrivateMessages(currentAccountId, targetAccountId, startLoadTimeInternal, pageable)
                 .stream()

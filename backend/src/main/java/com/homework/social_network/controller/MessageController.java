@@ -1,11 +1,11 @@
 package com.homework.social_network.controller;
 
 import com.homework.social_network.dto.request.PrivateMessageRequestDto;
+import com.homework.social_network.dto.response.message.PrivateMessageResponseDto;
 import com.homework.social_network.dto.response.message.PrivateMessagesResponseDto;
 import com.homework.social_network.service.message.PrivateMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,8 +42,10 @@ public class MessageController {
         privateMessageService.acceptMessages(messageIds);
     }
 
-    @MessageMapping("/sendMessage")
-    public void sendMessage(PrivateMessageRequestDto requestDto) {
-        simpMessagingTemplate.convertAndSend("/queue/privateMessage/" + requestDto.getDestinationId(), privateMessageService.save(requestDto));
+    @PostMapping("/sendMessage")
+    public PrivateMessageResponseDto sendMessage(@RequestBody PrivateMessageRequestDto requestDto) {
+        PrivateMessageResponseDto responseDto = privateMessageService.save(requestDto);
+        simpMessagingTemplate.convertAndSend("/queue/privateMessage/" + requestDto.getDestinationId(), responseDto);
+        return responseDto;
     }
 }

@@ -18,6 +18,7 @@ public class PrivateMessageResponseDto {
     private UUID sourceId;
     private UUID destinationId;
     private String content;
+    private LocalDateTime sendDate;
     private LocalDateTime createDate;
     private boolean accepted;
 }
