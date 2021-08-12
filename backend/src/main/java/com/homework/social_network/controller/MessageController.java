@@ -3,6 +3,7 @@ package com.homework.social_network.controller;
 import com.homework.social_network.dto.request.PrivateMessageRequestDto;
 import com.homework.social_network.dto.response.message.PrivateMessagesResponseDto;
 import com.homework.social_network.service.message.PrivateMessageService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/message")
+@Slf4j
 public class MessageController {
 
     @Autowired
@@ -41,6 +43,7 @@ public class MessageController {
 
     @MessageMapping("/sendMessage")
     public void sendMessage(PrivateMessageRequestDto requestDto) {
+        log.info("Message with source {} received", requestDto.getSourceId().toString());
         simpMessagingTemplate.convertAndSend("/queue/privateMessage/" + requestDto.getDestinationId(), privateMessageService.save(requestDto));
     }
 }
