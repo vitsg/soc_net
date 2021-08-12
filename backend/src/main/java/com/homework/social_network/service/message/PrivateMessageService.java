@@ -49,6 +49,7 @@ public class PrivateMessageService {
     public PrivateMessageResponseDto save(PrivateMessageRequestDto requestDto) {
         PrivateMessage message = modelMapper.map(requestDto, PrivateMessage.class);
         message.setAccepted(false);
+        message.setCreateDate(LocalDateTime.now());
         return modelMapper.map(privateMessageRepository.save(message), PrivateMessageResponseDto.class);
     }
 

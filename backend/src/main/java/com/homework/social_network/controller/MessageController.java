@@ -43,7 +43,6 @@ public class MessageController {
 
     @MessageMapping("/sendMessage")
     public void sendMessage(PrivateMessageRequestDto requestDto) {
-        log.info("Message with source {} received", requestDto.getSourceId().toString());
         simpMessagingTemplate.convertAndSend("/queue/privateMessage/" + requestDto.getDestinationId(), privateMessageService.save(requestDto));
     }
 }
