@@ -13,13 +13,13 @@ public class MessageWebSocket {
     @Autowired
     private PrivateMessageService privateMessageService;
 
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
-
-    @MessageMapping("/sendMessage")
-    public void sendMessage(PrivateMessageRequestDto requestDto) {
-        simpMessagingTemplate.convertAndSend("/queue/privateMessage/" + requestDto.getDestinationId(), privateMessageService.save(requestDto));
-    }
+//    @Autowired
+//    private SimpMessagingTemplate simpMessagingTemplate;
+//
+//    @MessageMapping("/sendMessage")
+//    public void sendMessage(PrivateMessageRequestDto requestDto) {
+//        simpMessagingTemplate.convertAndSend("/queue/privateMessage/" + requestDto.getDestinationId(), privateMessageService.save(requestDto));
+//    }
 
 //    @MessageMapping("/sendMessageOnAccountWall")
 //    public void sendMessageOnAccountWall(MessageOnWall message) {
