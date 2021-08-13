@@ -5,7 +5,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <include file="db/changelog/2021/08/12-01-changelog.xml"/>
     <changeSet id="1.0.0" author="v.goncharenko">
         <createTable tableName="account">
             <column name="id" type="uuid">
@@ -249,6 +248,14 @@
             <column name="content" type="CLOB"/>
             <column name="accepted" type="BOOLEAN"/>
         </createTable>
+    </changeSet>
+    <changeSet id="1628785315447-3" author="vitsg (generated)">
+        <addColumn tableName="private_messages">
+            <column name="send_date" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1628785315447-4" author="vitsg (generated)">
+        <addNotNullConstraint columnName="send_date" tableName="private_messages"/>
     </changeSet>
 
 </databaseChangeLog>
