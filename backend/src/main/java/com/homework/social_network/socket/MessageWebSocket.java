@@ -1,10 +1,7 @@
 package com.homework.social_network.socket;
 
-import com.homework.social_network.dto.request.PrivateMessageRequestDto;
 import com.homework.social_network.service.message.PrivateMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 @Component

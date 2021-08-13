@@ -1,4 +1,4 @@
-package com.homework.social_network.dto.request;
+package com.homework.social_network.dto.request.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

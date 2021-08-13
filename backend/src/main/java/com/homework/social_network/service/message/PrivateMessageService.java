@@ -1,6 +1,6 @@
 package com.homework.social_network.service.message;
 
-import com.homework.social_network.dto.request.PrivateMessageRequestDto;
+import com.homework.social_network.dto.request.message.PrivateMessageRequestDto;
 import com.homework.social_network.dto.response.message.PrivateMessageResponseDto;
 import com.homework.social_network.dto.response.message.PrivateMessagesResponseDto;
 import com.homework.social_network.entity.message.PrivateMessage;
