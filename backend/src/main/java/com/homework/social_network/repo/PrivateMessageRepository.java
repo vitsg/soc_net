@@ -12,12 +12,12 @@ import java.util.UUID;
 
 public interface PrivateMessageRepository extends PagingAndSortingRepository<PrivateMessage, UUID> {
 
-    @Query(value = "select m from PrivateMessage m where (m.sourceId = :currentAccountId and m.destinationId = :targetId) or " +
-            "(m.destinationId = :currentAccountId and m.sourceId = :targetId) and m.sendDate <= :startLoadTime")
+    @Query(value = "select m from PrivateMessage m where ((m.sourceId = :currentAccountId and m.destinationId = :targetId) or " +
+            "(m.destinationId = :currentAccountId and m.sourceId = :targetId)) and m.sendDate <= :startLoadTime")
     List<PrivateMessage> getPrivateMessages(UUID currentAccountId, UUID targetId, LocalDateTime startLoadTime, Pageable pageable);
 
-    @Query(value = "select count(m) from PrivateMessage m where (m.sourceId = :currentAccountId and m.destinationId = :targetId) or " +
-            "(m.destinationId = :currentAccountId and m.sourceId = :targetId) and m.sendDate <= :startLoadTime")
+    @Query(value = "select count(m) from PrivateMessage m where ((m.sourceId = :currentAccountId and m.destinationId = :targetId) or " +
+            "(m.destinationId = :currentAccountId and m.sourceId = :targetId)) and m.sendDate <= :startLoadTime")
     long getPrivateMessagesCount(UUID currentAccountId, UUID targetId, LocalDateTime startLoadTime);
 
     @Modifying
