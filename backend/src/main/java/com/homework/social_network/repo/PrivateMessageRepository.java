@@ -16,6 +16,10 @@ public interface PrivateMessageRepository extends PagingAndSortingRepository<Pri
             "(m.destinationId = :currentAccountId and m.sourceId = :targetId) and m.sendDate <= :startLoadTime")
     List<PrivateMessage> getPrivateMessages(UUID currentAccountId, UUID targetId, LocalDateTime startLoadTime, Pageable pageable);
 
+    @Query(value = "select count(m) from PrivateMessage m where (m.sourceId = :currentAccountId and m.destinationId = :targetId) or " +
+            "(m.destinationId = :currentAccountId and m.sourceId = :targetId) and m.sendDate <= :startLoadTime")
+    long getPrivateMessagesCount(UUID currentAccountId, UUID targetId, LocalDateTime startLoadTime);
+
     @Modifying
     @Query("update PrivateMessage m set m.accepted = true where m.id in :messageIds")
     void acceptMessages(List<UUID> messageIds);

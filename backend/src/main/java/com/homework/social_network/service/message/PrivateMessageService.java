@@ -42,6 +42,7 @@ public class PrivateMessageService {
         return PrivateMessagesResponseDto.builder()
                 .messages(messages)
                 .startLoadTime(startLoadTimeInternal)
+                .totalSize(privateMessageRepository.getPrivateMessagesCount(currentAccountId, targetAccountId, startLoadTimeInternal))
                 .build();
     }
 

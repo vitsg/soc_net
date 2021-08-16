@@ -15,5 +15,6 @@ import java.util.List;
 public class PrivateMessagesResponseDto {
 
     private List<PrivateMessageResponseDto> messages;
+    private long totalSize;
     private LocalDateTime startLoadTime;
 }
