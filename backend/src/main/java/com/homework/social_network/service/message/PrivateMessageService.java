@@ -3,6 +3,8 @@ package com.homework.social_network.service.message;
 import com.homework.social_network.dto.request.message.PrivateMessageRequestDto;
 import com.homework.social_network.dto.response.message.PrivateMessageResponseDto;
 import com.homework.social_network.dto.response.message.PrivateMessagesResponseDto;
+import com.homework.social_network.entity.Account;
+import com.homework.social_network.entity.BaseEntity;
 import com.homework.social_network.entity.message.PrivateMessage;
 import com.homework.social_network.repo.PrivateMessageRepository;
 import com.homework.social_network.utils.CustomPageable;
@@ -15,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.homework.social_network.utils.Utils.getCurrentAccountId;
@@ -66,5 +70,12 @@ public class PrivateMessageService {
                 .stream()
                 .map(m -> modelMapper.map(m, PrivateMessageResponseDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Map<UUID, PrivateMessage> getBatch(List<UUID> ids) {
+        return privateMessageRepository.getAllByIdIn(ids)
+                .stream()
+                .collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
     }
 }

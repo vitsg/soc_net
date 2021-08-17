@@ -202,6 +202,11 @@ public class AccountService {
     }
 
     @Transactional
+    public Account getByIdWithPhoto(UUID id) {
+        return accountRepository.getByIdWithPhoto(id);
+    }
+
+    @Transactional
     public void changeCredentials(ChangeCredentialsRequestDto changeCredentialsRequestDto) {
         UUID currentAccountId = getCurrentAccountId();
         String oldPassword = changeCredentialsRequestDto.getOldPassword();
