@@ -257,5 +257,13 @@
     <changeSet id="1628785315447-4" author="vitsg (generated)">
         <addNotNullConstraint columnName="send_date" tableName="private_messages"/>
     </changeSet>
+    <changeSet id="1629910604695-3" author="vitsg (generated)">
+        <addColumn tableName="messages_on_wall">
+            <column name="send_date" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1629910604695-4" author="vitsg (generated)">
+        <addNotNullConstraint columnName="send_date" tableName="messages_on_wall"/>
+    </changeSet>
 
 </databaseChangeLog>

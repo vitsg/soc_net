@@ -14,6 +14,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -36,4 +37,7 @@ public class MessageOnWall extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private MessageOnWallType messageOnWallType;
+
+    @Column(name = "send_date", nullable = false)
+    private LocalDateTime sendDate;
 }

@@ -1,9 +1,14 @@
 package com.homework.social_network.controller;
 
+import com.homework.social_network.dto.request.message.MessageOnWallRequestDto;
+import com.homework.social_network.dto.request.message.MessagesOnWallRequestDto;
 import com.homework.social_network.dto.request.message.PrivateMessageRequestDto;
 import com.homework.social_network.dto.request.message.PrivateMessagesRequestDto;
+import com.homework.social_network.dto.response.message.MessageOnWallResponseDto;
+import com.homework.social_network.dto.response.message.MessagesOnWallResponseDto;
 import com.homework.social_network.dto.response.message.PrivateMessageResponseDto;
 import com.homework.social_network.dto.response.message.PrivateMessagesResponseDto;
+import com.homework.social_network.service.message.MessageOnWallService;
 import com.homework.social_network.service.message.PrivateMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +33,9 @@ public class MessageController {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    @Autowired
+    private MessageOnWallService messageOnWallService;
+
     @PostMapping(value = "/get-private-messages")
     public PrivateMessagesResponseDto getPrivateMessages(@RequestBody PrivateMessagesRequestDto requestDto) {
         return privateMessageService.getPrivateMessages(requestDto.getTargetAccountId(), requestDto.getStartLoadTime(),
@@ -49,5 +57,18 @@ public class MessageController {
     @GetMapping("/get-unaccepted-messages")
     public List<PrivateMessageResponseDto> getUnacceptedMessages() {
         return privateMessageService.getUnacceptedMessages();
+    }
+
+    @PostMapping("/sendMessageOnWall")
+    public MessageOnWallResponseDto sendMessageOnWall(@RequestBody MessageOnWallRequestDto requestDto) {
+        MessageOnWallResponseDto responseDto = messageOnWallService.save(requestDto);
+        simpMessagingTemplate.convertAndSend("/topic/messageOnWall/" + requestDto.getDestinationId(), responseDto);
+        return responseDto;
+    }
+
+    @PostMapping(value = "/getMessagesOnWall")
+    public MessagesOnWallResponseDto getMessagesOnWall(@RequestBody MessagesOnWallRequestDto requestDto) {
+        return messageOnWallService.getMessagesOnWall(requestDto.getTargetId(), requestDto.getStartLoadTime(),
+                requestDto.getStart(), requestDto.getEnd());
     }
 }

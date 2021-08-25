@@ -1,0 +1,50 @@
+package com.homework.social_network.service.message;
+
+import com.homework.social_network.dto.request.message.MessageOnWallRequestDto;
+import com.homework.social_network.dto.response.message.MessageOnWallResponseDto;
+import com.homework.social_network.dto.response.message.MessagesOnWallResponseDto;
+import com.homework.social_network.entity.message.MessageOnWall;
+import com.homework.social_network.repo.MessageOnWallRepository;
+import com.homework.social_network.utils.CustomPageable;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+public class MessageOnWallService {
+
+    @Autowired
+    private MessageOnWallRepository messageOnWallRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Transactional
+    public MessageOnWallResponseDto save(MessageOnWallRequestDto requestDto) {
+        MessageOnWall message = modelMapper.map(requestDto, MessageOnWall.class);
+        message.setCreateDate(LocalDateTime.now());
+        return modelMapper.map(messageOnWallRepository.save(message), MessageOnWallResponseDto.class);
+    }
+
+    @Transactional
+    public MessagesOnWallResponseDto getMessagesOnWall(UUID targetId, LocalDateTime startLoadTime, int start, int end) {
+        Pageable pageable = new CustomPageable(start, end - start, Sort.by(Sort.Direction.DESC, "sendDate"));
+        List<MessageOnWallResponseDto> messages = messageOnWallRepository.getMessagesOnWall(targetId, startLoadTime, pageable)
+                .stream()
+                .map(m -> modelMapper.map(m, MessageOnWallResponseDto.class))
+                .collect(Collectors.toList());
+        return MessagesOnWallResponseDto.builder()
+                .messages(messages)
+                .startLoadTime(startLoadTime)
+                .totalSize(messageOnWallRepository.getMessagesOnWallCount(targetId, startLoadTime))
+                .build();
+    }
+}
