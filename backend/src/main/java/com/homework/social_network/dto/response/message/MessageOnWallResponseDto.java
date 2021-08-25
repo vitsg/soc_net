@@ -1,5 +1,6 @@
 package com.homework.social_network.dto.response.message;
 
+import com.homework.social_network.dto.response.account.list.AccountSimpleResponseDto;
 import com.homework.social_network.enums.MessageOnWallType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.util.UUID;
 public class MessageOnWallResponseDto {
 
     private UUID id;
-    private UUID sourceId;
+    private AccountSimpleResponseDto source;
     private UUID destinationId;
     private String content;
     private MessageOnWallType messageOnWallType;

@@ -54,9 +54,9 @@ public class DialogService {
                 .dialogs(
                         dialogs.stream()
                                 .map(d -> {
-                                    Account companion = accounts.get(d.getCompanionId());
-                                    AccountSimpleResponseDto simple = modelMapper.map(companion, AccountSimpleResponseDto.class);
-                                    simple.setPhoto(getOrDefaultContentPhoto(companion.getPhoto()));
+                                            Account companion = accounts.get(d.getCompanionId());
+                                            AccountSimpleResponseDto simple = modelMapper.map(companion, AccountSimpleResponseDto.class);
+                                            simple.setPhoto(getOrDefaultContentPhoto(companion.getPhoto()));
                                             return DialogResponseDto.builder()
                                                     .lastMessage(modelMapper.map(messages.get(d.getLastMessageId()), PrivateMessageResponseDto.class))
                                                     .account(simple)
