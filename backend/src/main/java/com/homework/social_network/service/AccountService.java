@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -199,6 +200,14 @@ public class AccountService {
         return accountRepository.findAllByIds(ids)
                 .stream()
                 .collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
+    }
+
+    @Transactional
+    public AccountSimpleResponseDto getSimple(UUID id) {
+        Account account = accountRepository.findAllByIds(Collections.singletonList(id)).get(0);
+        AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
+        simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
+        return simple;
     }
 
     @Transactional

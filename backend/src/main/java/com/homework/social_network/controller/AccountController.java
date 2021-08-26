@@ -4,6 +4,7 @@ import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
 import com.homework.social_network.dto.request.ChangeCredentialsRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
+import com.homework.social_network.dto.response.account.list.AccountSimpleResponseDto;
 import com.homework.social_network.dto.response.account.page.AccountPageResponseDto;
 import com.homework.social_network.dto.response.account.page.AccountPageInfoResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountsResponseDto;
@@ -67,4 +68,10 @@ public class AccountController {
     public void changeCredentials(@RequestBody ChangeCredentialsRequestDto changeCredentialsRequestDto) {
         accountService.changeCredentials(changeCredentialsRequestDto);
     }
+
+    @PostMapping("/simple-account/{id}")
+    public AccountSimpleResponseDto getSimple(@PathVariable UUID id) {
+        return accountService.getSimple(id);
+    }
+
 }
