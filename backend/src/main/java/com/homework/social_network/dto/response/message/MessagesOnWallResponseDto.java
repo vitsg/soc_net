@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class MessagesOnWallResponseDto {
 
-    private List<MessageOnWallResponseDto> messages;
+    private List<MessageOnWallFullResponseDto> messages;
     private long totalSize;
     private LocalDateTime startLoadTime;
 }

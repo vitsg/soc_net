@@ -2,6 +2,7 @@ package com.homework.social_network.service.message;
 
 import com.homework.social_network.dto.request.message.MessageOnWallRequestDto;
 import com.homework.social_network.dto.response.account.list.AccountSimpleResponseDto;
+import com.homework.social_network.dto.response.message.MessageOnWallFullResponseDto;
 import com.homework.social_network.dto.response.message.MessageOnWallResponseDto;
 import com.homework.social_network.dto.response.message.MessagesOnWallResponseDto;
 import com.homework.social_network.entity.Account;
@@ -51,9 +52,9 @@ public class MessageOnWallService {
         Map<UUID, Account> accounts = accountService.getBatch(new ArrayList<>(result.stream()
                 .map(MessageOnWall::getSourceId)
                 .collect(Collectors.toSet())));
-        List<MessageOnWallResponseDto> messages = result.stream()
+        List<MessageOnWallFullResponseDto> messages = result.stream()
                 .map(m -> {
-                    MessageOnWallResponseDto dto = modelMapper.map(m, MessageOnWallResponseDto.class);
+                    MessageOnWallFullResponseDto dto = modelMapper.map(m, MessageOnWallFullResponseDto.class);
                     Account account = accounts.get(m.getSourceId());
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
                     simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
