@@ -1,6 +1,5 @@
 package com.homework.social_network.service.request;
 
-import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.FriendRequest;
 import com.homework.social_network.enums.FriendRelationStatus;
 import com.homework.social_network.repo.FriendRequestRepository;

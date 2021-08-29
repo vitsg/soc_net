@@ -265,5 +265,30 @@
     <changeSet id="1629910604695-4" author="vitsg (generated)">
         <addNotNullConstraint columnName="send_date" tableName="messages_on_wall"/>
     </changeSet>
+    <changeSet id="1630261688235-3" author="vitsg (generated)">
+        <createTable tableName="notification">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_notification"/>
+            </column>
+            <column name="create_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notification_type" type="INT"/>
+            <column name="source_id" type="UUID"/>
+            <column name="destination_id" type="UUID"/>
+            <column name="accepted" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1630261688235-4" author="vitsg (generated)">
+        <dropColumn columnName="messageonwalltype" tableName="messages_on_wall"/>
+    </changeSet>
+    <changeSet id="1630261775580-3" author="vitsg (generated)">
+        <dropColumn columnName="notification_type" tableName="notification"/>
+    </changeSet>
+    <changeSet id="1630261775580-4" author="vitsg (generated)">
+        <addColumn tableName="notification">
+            <column name="notification_type" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

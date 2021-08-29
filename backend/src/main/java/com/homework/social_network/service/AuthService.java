@@ -6,6 +6,7 @@ import com.homework.social_network.entity.Account;
 import com.homework.social_network.enums.Access;
 import com.homework.social_network.repo.AccountRepository;
 import com.homework.social_network.service.message.PrivateMessageService;
+import com.homework.social_network.service.notification.NotificationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,9 @@ public class AuthService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Transactional
     public Account findByEmail(String email) {
@@ -55,6 +59,7 @@ public class AuthService {
         currentStatusDto.setCurrentAccount(modelMapper.map(account, AccountPageResponseDto.class));
         currentStatusDto.setAccesses(accesses);
         currentStatusDto.setUnacceptedMessages(privateMessageService.getUnacceptedMessages());
+        currentStatusDto.setUnacceptedNotifications(notificationService.getUnacceptedNotifications());
         return currentStatusDto;
     }
 }

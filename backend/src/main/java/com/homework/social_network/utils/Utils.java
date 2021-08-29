@@ -9,6 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -47,5 +50,9 @@ public class Utils {
 
     public static UUID getCurrentAccountId() {
         return getCurrentAccount().getId();
+    }
+
+    public static LocalDateTime getCurrentDateTime() {
+        return OffsetDateTime.now(ZoneOffset.UTC).toLocalDateTime();
     }
 }

@@ -36,6 +36,7 @@ public class MessageOnWall extends BaseEntity {
     private String content;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "message_on_wall_type")
     private MessageOnWallType messageOnWallType;
 
     @Column(name = "send_date", nullable = false)

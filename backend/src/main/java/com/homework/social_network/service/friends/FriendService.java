@@ -5,8 +5,10 @@ import com.homework.social_network.dto.response.account.list.AccountEntryRespons
 import com.homework.social_network.dto.response.account.list.AccountSimpleResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountsResponseDto;
 import com.homework.social_network.enums.FriendRelationStatus;
+import com.homework.social_network.enums.NotificationType;
 import com.homework.social_network.repo.AccountRepository;
 import com.homework.social_network.service.AccountService;
+import com.homework.social_network.service.notification.NotificationService;
 import com.homework.social_network.service.request.FriendRequestService;
 import com.homework.social_network.specification.account.friend.FriendSpecification;
 import com.homework.social_network.specification.account.friend.InputFriendSpecification;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.homework.social_network.utils.Utils.getCurrentAccountId;
 import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
 
 @Service
@@ -33,27 +36,33 @@ public class FriendService {
     private FriendRequestService friendRequestService;
 
     @Autowired
-    private AccountService accountService;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Transactional
     public FriendRelationStatus addFriend(UUID targetId) {
-        return friendRequestService.addFriendRequest(targetId);
+        FriendRelationStatus resultRelation = friendRequestService.addFriendRequest(targetId);
+        notificationService.createNotificationAddFriend(getCurrentAccountId(), targetId, resultRelation);
+        return resultRelation;
     }
 
     @Transactional
     public FriendRelationStatus removeFriend(UUID targetId) {
-        return friendRequestService.removeFriendRequest(targetId);
+        FriendRelationStatus resultRelation = friendRequestService.removeFriendRequest(targetId);
+        notificationService.createNotificationRemoveFriend(getCurrentAccountId(), targetId, resultRelation);
+        return resultRelation;
     }
 
     @Transactional
     public FriendRelationStatus rejectFriend(UUID targetId) {
-        return friendRequestService.rejectFriendRequest(targetId);
+        FriendRelationStatus resultRelation = friendRequestService.rejectFriendRequest(targetId);
+        notificationService.createNotificationRejectFriend(getCurrentAccountId(), targetId);
+        return resultRelation;
     }
 
     @Transactional
