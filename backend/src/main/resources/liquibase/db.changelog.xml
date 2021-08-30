@@ -279,9 +279,6 @@
             <column name="accepted" type="BOOLEAN"/>
         </createTable>
     </changeSet>
-    <changeSet id="1630261688235-4" author="vitsg (generated)">
-        <dropColumn columnName="messageonwalltype" tableName="messages_on_wall"/>
-    </changeSet>
     <changeSet id="1630261775580-3" author="vitsg (generated)">
         <dropColumn columnName="notification_type" tableName="notification"/>
     </changeSet>
