@@ -287,5 +287,10 @@
             <column name="notification_type" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="1630341437015-3" author="vitsg (generated)">
+        <addColumn tableName="account">
+            <column name="partner_id" type="UUID"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

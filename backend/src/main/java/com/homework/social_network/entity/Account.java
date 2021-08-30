@@ -2,6 +2,7 @@ package com.homework.social_network.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.homework.social_network.enums.Sex;
+import com.homework.social_network.enums.SexRelation;
 import com.homework.social_network.enums.UserRole;
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
@@ -25,6 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -57,7 +59,11 @@ public class Account extends BaseEntity implements UserDetails {
     private String city;
 
     @Column(name = "family_status")
-    private String familyStatus;
+    @Enumerated(value = EnumType.STRING)
+    private SexRelation familyStatus;
+
+    @Column(name = "partner_id")
+    private UUID partnerId;
 
     @Column(name = "phone")
     private String phone;

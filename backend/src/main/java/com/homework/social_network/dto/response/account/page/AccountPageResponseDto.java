@@ -1,6 +1,8 @@
 package com.homework.social_network.dto.response.account.page;
 
+import com.homework.social_network.dto.response.account.list.AccountSimpleResponseDto;
 import com.homework.social_network.enums.Sex;
+import com.homework.social_network.enums.SexRelation;
 import com.homework.social_network.enums.UserRole;
 import lombok.Data;
 
@@ -18,7 +20,8 @@ public class AccountPageResponseDto {
     private UserRole role;
     private Sex sex;
     private String city;
-    private String familyStatus;
+    private SexRelation familyStatus;
+    private AccountSimpleResponseDto partner;
     private String phone;
     private String employment;
     private String description;

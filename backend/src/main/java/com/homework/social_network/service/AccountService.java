@@ -4,22 +4,22 @@ import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.request.AccountUpdateRequestDto;
 import com.homework.social_network.dto.request.ChangeCredentialsRequestDto;
 import com.homework.social_network.dto.request.PhotoRequestDto;
+import com.homework.social_network.dto.response.account.access.AccountAccessResponseDto;
+import com.homework.social_network.dto.response.account.info.AccountMetainfoResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountEntryResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountSimpleResponseDto;
-import com.homework.social_network.dto.response.account.page.AccountPageInfoResponseDto;
-import com.homework.social_network.dto.response.account.info.AccountMetainfoResponseDto;
-import com.homework.social_network.dto.response.account.page.AccountPageResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountsResponseDto;
-import com.homework.social_network.dto.response.account.access.AccountAccessResponseDto;
+import com.homework.social_network.dto.response.account.page.AccountPageInfoResponseDto;
+import com.homework.social_network.dto.response.account.page.AccountPageResponseDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.BaseEntity;
 import com.homework.social_network.entity.Photo;
+import com.homework.social_network.enums.SexRelation;
 import com.homework.social_network.enums.UserRole;
 import com.homework.social_network.exception.CustomException;
 import com.homework.social_network.repo.AccountRepository;
 import com.homework.social_network.repo.PhotoRepository;
 import com.homework.social_network.service.relation.AccountRelationService;
-import com.homework.social_network.service.request.FriendRequestService;
 import com.homework.social_network.specification.account.AllAccountSpecificationHepler;
 import com.homework.social_network.utils.CustomPageable;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -77,13 +78,17 @@ public class AccountService {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         account.setCreateDate(LocalDateTime.now());
         Account savedAccount = accountRepository.save(account);
-        return modelMapper.map(savedAccount, AccountPageResponseDto.class);
+        AccountPageResponseDto accountPageResponseDto = modelMapper.map(savedAccount, AccountPageResponseDto.class);
+        accountPageResponseDto.setPartner(buildPartnerDto(savedAccount));
+        return accountPageResponseDto;
     }
 
     @Transactional
     public AccountPageResponseDto findOne(UUID id) {
         Account account = accountRepository.getById(id);
-        return modelMapper.map(account, AccountPageResponseDto.class);
+        AccountPageResponseDto accountPageResponseDto = modelMapper.map(account, AccountPageResponseDto.class);
+        accountPageResponseDto.setPartner(buildPartnerDto(account));
+        return accountPageResponseDto;
     }
 
     @Transactional
@@ -99,7 +104,10 @@ public class AccountService {
         }
         Account account = accountRepository.getById(accountUpdateRequestDto.getId());
         modelMapper.map(accountUpdateRequestDto, account);
-        return modelMapper.map(accountRepository.save(account), AccountPageResponseDto.class);
+        Account savedAccount = accountRepository.save(account);
+        AccountPageResponseDto accountPageResponseDto = modelMapper.map(savedAccount, AccountPageResponseDto.class);
+        accountPageResponseDto.setPartner(buildPartnerDto(savedAccount));
+        return accountPageResponseDto;
     }
 
     @Transactional
@@ -152,7 +160,9 @@ public class AccountService {
     private AccountPageInfoResponseDto createPageInfo(Account targetAccount) {
         Account currentAccount = getCurrentAccount();
         AccountPageInfoResponseDto accountPageInfoResponseDto = new AccountPageInfoResponseDto();
-        accountPageInfoResponseDto.setAccount(modelMapper.map(targetAccount, AccountPageResponseDto.class));
+        AccountPageResponseDto accountPageResponseDto = modelMapper.map(targetAccount, AccountPageResponseDto.class);
+        accountPageResponseDto.setPartner(buildPartnerDto(targetAccount));
+        accountPageInfoResponseDto.setAccount(accountPageResponseDto);
 
         AccountAccessResponseDto accountAccessResponseDto = new AccountAccessResponseDto();
         accountAccessResponseDto.setCanChangePhoto(true);
@@ -167,15 +177,34 @@ public class AccountService {
         return accountPageInfoResponseDto;
     }
 
+    private AccountSimpleResponseDto buildPartnerDto(Account account) {
+        if (account.getFamilyStatus() == SexRelation.RELATION
+                && Objects.nonNull(account.getPartnerId())
+                && accountRepository.existsByIdAndPartnerId(account.getPartnerId(), account.getId())) {
+            Account partner = accountRepository.findAllByIds(Collections.singletonList(account.getPartnerId()))
+                    .stream()
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Partner with id " + account.getPartnerId() + " not found"));
+            AccountSimpleResponseDto simple = modelMapper.map(partner, AccountSimpleResponseDto.class);
+            simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
+            return simple;
+        }
+        return null;
+    }
+
     @Transactional
-    public AccountsResponseDto getAllAccount(int start, int end, String name) {
+    public AccountsResponseDto getAllAccount(int start, int end, String name, boolean withoutSelf) {
         Account currentAccount = getCurrentAccount();
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(Sort.Order.asc("lastName"));
         orders.add(Sort.Order.asc("firstName"));
         Sort sort = Sort.by(orders);
+        List<UUID> excludedIds = new ArrayList<>();
+        if (withoutSelf) {
+            excludedIds.add(currentAccount.getId());
+        }
         Pageable pageable = new CustomPageable(start, end - start, sort);
-        List<AccountEntryResponseDto> accounts = accountRepository.findAll(AllAccountSpecificationHepler.allAccountSpecification(name), pageable)
+        List<AccountEntryResponseDto> accounts = accountRepository.findAll(AllAccountSpecificationHepler.allAccountSpecification(name, excludedIds), pageable)
                 .stream()
                 .map(account -> {
                     AccountSimpleResponseDto simple = modelMapper.map(account, AccountSimpleResponseDto.class);
@@ -191,7 +220,7 @@ public class AccountService {
                 .collect(Collectors.toList());
         return AccountsResponseDto.builder()
                 .accounts(accounts)
-                .totalSize((int) accountRepository.count(AllAccountSpecificationHepler.countAllAccountSpecification(name)))
+                .totalSize((int) accountRepository.count(AllAccountSpecificationHepler.countAllAccountSpecification(name, excludedIds)))
                 .build();
     }
 

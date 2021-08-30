@@ -16,4 +16,6 @@ public interface AccountRepository extends JpaRepository<Account, UUID>, CustomA
 
     @Query("select a from Account a left join fetch a.photo where a.id = :id")
     Account getByIdWithPhoto(UUID id);
+
+    boolean existsByIdAndPartnerId(UUID id, UUID partnerId);
 }
