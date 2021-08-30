@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -81,6 +82,19 @@ public class NotificationService {
                 .stream()
                 .map(m -> modelMapper.map(m, NotificationResponseDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public void createNotificationAddPartner(UUID sourceId, UUID oldPartner, UUID newPartner) {
+        if (Objects.equals(newPartner, oldPartner)) {
+            return;
+        }
+
+        if (Objects.nonNull(oldPartner)) {
+            createNotificationInternal(sourceId, oldPartner, NotificationType.REMOVE_PARTNER);
+        }
+        if (Objects.nonNull(newPartner)) {
+            createNotificationInternal(sourceId, oldPartner, NotificationType.ADD_PARTNER);
+        }
     }
 
     public void createNotificationAddFriend(UUID sourceId, UUID destinationId, FriendRelationStatus resultStatus) {

@@ -19,6 +19,7 @@ import com.homework.social_network.enums.UserRole;
 import com.homework.social_network.exception.CustomException;
 import com.homework.social_network.repo.AccountRepository;
 import com.homework.social_network.repo.PhotoRepository;
+import com.homework.social_network.service.notification.NotificationService;
 import com.homework.social_network.service.relation.AccountRelationService;
 import com.homework.social_network.specification.account.AllAccountSpecificationHepler;
 import com.homework.social_network.utils.CustomPageable;
@@ -67,6 +68,9 @@ public class AccountService {
     @Autowired
     private AccountRelationService accountRelationService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Transactional
     public AccountPageResponseDto registration(AccountRegistrationRequestDto accountRegistrationRequestDto) {
         Account account = modelMapper.map(accountRegistrationRequestDto, Account.class);
@@ -78,6 +82,7 @@ public class AccountService {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         account.setCreateDate(LocalDateTime.now());
         Account savedAccount = accountRepository.save(account);
+        notificationService.createNotificationAddPartner(savedAccount.getId(), null, savedAccount.getPartnerId());
         AccountPageResponseDto accountPageResponseDto = modelMapper.map(savedAccount, AccountPageResponseDto.class);
         accountPageResponseDto.setPartner(buildPartnerDto(savedAccount));
         return accountPageResponseDto;
@@ -103,8 +108,11 @@ public class AccountService {
             throw new CustomException("UPDATE_ACCOUNT_REJECT_ANOTHER_ACCOUNT", "Reject update another account");
         }
         Account account = accountRepository.getById(accountUpdateRequestDto.getId());
+        UUID oldPartner = account.getPartnerId();
         modelMapper.map(accountUpdateRequestDto, account);
         Account savedAccount = accountRepository.save(account);
+        UUID newPartner = savedAccount.getPartnerId();
+        notificationService.createNotificationAddPartner(savedAccount.getId(), oldPartner, savedAccount.getPartnerId());
         AccountPageResponseDto accountPageResponseDto = modelMapper.map(savedAccount, AccountPageResponseDto.class);
         accountPageResponseDto.setPartner(buildPartnerDto(savedAccount));
         return accountPageResponseDto;
