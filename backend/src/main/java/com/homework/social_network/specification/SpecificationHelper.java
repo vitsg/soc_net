@@ -10,14 +10,16 @@ import javax.persistence.criteria.Root;
 public class SpecificationHelper {
 
     public static Predicate getAccountNamePredicate(String name, CriteriaBuilder criteriaBuilder, Root<Account> root) {
+        String nameInternal = name.toLowerCase();
         return criteriaBuilder.or(
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")), "%" + name + "%"),
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")), "%" + name + "%")
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")), "%" + nameInternal + "%"),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")), "%" + nameInternal + "%")
         );
     }
 
     public static Predicate getGroupNamePredicate(String name, CriteriaBuilder criteriaBuilder, Root<Group> root) {
-        return criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name + "%");
+        String nameInternal = name.toLowerCase();
+        return criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + nameInternal + "%");
 
     }
 }

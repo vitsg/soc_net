@@ -64,11 +64,6 @@ public class AccountController {
         return accountService.getAllAccount(start, end, name, false);
     }
 
-    @RequestMapping(value = "/allWithoutSelf", method = RequestMethod.GET)
-    public AccountsResponseDto getAccountsWithoutSelf(@RequestParam int start, @RequestParam int end, @RequestParam(required = false) String name) {
-        return accountService.getAllAccount(start, end, name, true);
-    }
-
     @PostMapping("/change-credentials")
     public void changeCredentials(@RequestBody ChangeCredentialsRequestDto changeCredentialsRequestDto) {
         accountService.changeCredentials(changeCredentialsRequestDto);
