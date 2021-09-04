@@ -84,7 +84,7 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    public void createNotificationAddPartner(UUID sourceId, UUID oldPartner, UUID newPartner) {
+    public void createNotificationForPartner(UUID sourceId, UUID oldPartner, UUID newPartner) {
         if (Objects.equals(newPartner, oldPartner)) {
             return;
         }
@@ -93,7 +93,7 @@ public class NotificationService {
             createNotificationInternal(sourceId, oldPartner, NotificationType.REMOVE_PARTNER);
         }
         if (Objects.nonNull(newPartner)) {
-            createNotificationInternal(sourceId, oldPartner, NotificationType.ADD_PARTNER);
+            createNotificationInternal(sourceId, newPartner, NotificationType.ADD_PARTNER);
         }
     }
 

@@ -83,7 +83,7 @@ public class AccountService {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         account.setCreateDate(LocalDateTime.now());
         Account savedAccount = accountRepository.save(account);
-        notificationService.createNotificationAddPartner(savedAccount.getId(), null, savedAccount.getPartnerId());
+        notificationService.createNotificationForPartner(savedAccount.getId(), null, savedAccount.getPartnerId());
         AccountPageResponseDto accountPageResponseDto = modelMapper.map(savedAccount, AccountPageResponseDto.class);
         accountPageResponseDto.setPartner(buildPartnerDto(savedAccount));
         return accountPageResponseDto;
@@ -113,7 +113,7 @@ public class AccountService {
         modelMapper.map(accountUpdateRequestDto, account);
         Account savedAccount = accountRepository.save(account);
         UUID newPartner = savedAccount.getPartnerId();
-        notificationService.createNotificationAddPartner(savedAccount.getId(), oldPartner, savedAccount.getPartnerId());
+        notificationService.createNotificationForPartner(savedAccount.getId(), oldPartner, newPartner);
         AccountPageResponseDto accountPageResponseDto = modelMapper.map(savedAccount, AccountPageResponseDto.class);
         accountPageResponseDto.setPartner(buildPartnerDto(savedAccount));
         return accountPageResponseDto;
