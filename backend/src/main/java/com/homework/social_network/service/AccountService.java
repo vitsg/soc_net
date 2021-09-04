@@ -7,6 +7,7 @@ import com.homework.social_network.dto.request.PhotoRequestDto;
 import com.homework.social_network.dto.response.account.access.AccountAccessResponseDto;
 import com.homework.social_network.dto.response.account.info.AccountMetainfoResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountEntryResponseDto;
+import com.homework.social_network.dto.response.account.list.AccountSimplePartnerResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountSimpleResponseDto;
 import com.homework.social_network.dto.response.account.list.AccountsResponseDto;
 import com.homework.social_network.dto.response.account.page.AccountPageInfoResponseDto;
@@ -185,16 +186,15 @@ public class AccountService {
         return accountPageInfoResponseDto;
     }
 
-    private AccountSimpleResponseDto buildPartnerDto(Account account) {
-        if (account.getFamilyStatus() == SexRelation.RELATION
-                && Objects.nonNull(account.getPartnerId())
-                && accountRepository.existsByIdAndPartnerId(account.getPartnerId(), account.getId())) {
+    private AccountSimplePartnerResponseDto buildPartnerDto(Account account) {
+        if (account.getFamilyStatus() == SexRelation.RELATION && Objects.nonNull(account.getPartnerId())) {
             Account partner = accountRepository.findAllByIds(Collections.singletonList(account.getPartnerId()))
                     .stream()
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Partner with id " + account.getPartnerId() + " not found"));
-            AccountSimpleResponseDto simple = modelMapper.map(partner, AccountSimpleResponseDto.class);
+            AccountSimplePartnerResponseDto simple = modelMapper.map(partner, AccountSimplePartnerResponseDto.class);
             simple.setPhoto(getOrDefaultContentPhoto(account.getPhoto()));
+            simple.setAccepted(accountRepository.existsByIdAndPartnerId(account.getPartnerId(), account.getId()));
             return simple;
         }
         return null;
