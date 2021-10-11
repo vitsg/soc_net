@@ -1,6 +1,7 @@
 package com.homework.social_network.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.homework.social_network.enums.ErrorCode;
 import com.homework.social_network.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
                     Map<String, Object> data = new HashMap<>();
                     data.put("error", "Incorrect login or password");
-                    data.put("code", "INCORRECT_LOGIN_OR_PASSWORD");
+                    data.put("code", ErrorCode.INCORRECT_LOGIN_OR_PASSWORD);
                     httpServletResponse.getWriter()
                             .println(new ObjectMapper().writeValueAsString(data));
                 })

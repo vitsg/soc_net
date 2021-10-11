@@ -15,6 +15,7 @@ import com.homework.social_network.dto.response.account.page.AccountPageResponse
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.BaseEntity;
 import com.homework.social_network.entity.Photo;
+import com.homework.social_network.enums.ErrorCode;
 import com.homework.social_network.enums.SexRelation;
 import com.homework.social_network.enums.UserRole;
 import com.homework.social_network.exception.CustomException;
@@ -77,7 +78,7 @@ public class AccountService {
         Account account = modelMapper.map(accountRegistrationRequestDto, Account.class);
         String registrationEmail = account.getEmail();
         if (accountRepository.findByEmail(registrationEmail) != null) {
-            throw new CustomException("REGISTRATION_EMAIL_IS_EXISTS", "Email " + registrationEmail + " already exists");
+            throw new CustomException(ErrorCode.REGISTRATION_EMAIL_IS_EXISTS, "Email " + registrationEmail + " already exists");
         }
         account.setRole(UserRole.USER);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
@@ -106,7 +107,7 @@ public class AccountService {
     public AccountPageResponseDto update(AccountUpdateRequestDto accountUpdateRequestDto) {
         UUID currentAccountId = getCurrentAccountId();
         if (!currentAccountId.equals(accountUpdateRequestDto.getId())) {
-            throw new CustomException("UPDATE_ACCOUNT_REJECT_ANOTHER_ACCOUNT", "Reject update another account");
+            throw new CustomException(ErrorCode.UPDATE_ACCOUNT_REJECT_ANOTHER_ACCOUNT, "Reject update another account");
         }
         Account account = accountRepository.getById(accountUpdateRequestDto.getId());
         UUID oldPartner = account.getPartnerId();
@@ -258,25 +259,25 @@ public class AccountService {
         String oldPassword = changeCredentialsRequestDto.getOldPassword();
         String newPassword = changeCredentialsRequestDto.getNewPassword();
         if (!currentAccountId.equals(changeCredentialsRequestDto.getAccountId())) {
-            throw new CustomException("CHANGE_CREDENTIALS_REJECT_ANOTHER_ACCOUNT", "Reject update another account");
+            throw new CustomException(ErrorCode.CHANGE_CREDENTIALS_REJECT_ANOTHER_ACCOUNT, "Reject update another account");
         }
         Account account = accountRepository.getById(changeCredentialsRequestDto.getAccountId());
         String newEmail = Optional.ofNullable(changeCredentialsRequestDto.getEmail())
                 .filter(StringUtils::isNotEmpty)
-                .orElseThrow(() -> new CustomException("CHANGE_CREDENTIALS_EMPTY_PASSWORD_REJECT", "Email can not be empty"));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHANGE_CREDENTIALS_EMPTY_NEW_EMAIL_REJECT, "Email can not be empty"));
         if (!account.getEmail().equals(newEmail)) {
             if (accountRepository.findByEmail(newEmail) != null) {
-                throw new CustomException("CHANGE_CREDENTIALS_EMAIL_IS_EXISTS", "Email already exists");
+                throw new CustomException(ErrorCode.CHANGE_CREDENTIALS_EMAIL_IS_EXISTS, "Email already exists");
             }
             account.setEmail(newEmail);
         }
 
         if (StringUtils.isNotEmpty(oldPassword)) {
             if (passwordEncoder.matches(account.getPassword(), oldPassword)) {
-                throw new CustomException("CHANGE_CREDENTIALS_INCORRECT_OLD_PASSWORD", "Incorrect old password");
+                throw new CustomException(ErrorCode.CHANGE_CREDENTIALS_INCORRECT_OLD_PASSWORD, "Incorrect old password");
             }
             if (StringUtils.isEmpty(newPassword)) {
-                throw new CustomException("CHANGE_CREDENTIALS_EMPTY_NEW_PASSWORD", "New password can not be empty");
+                throw new CustomException(ErrorCode.CHANGE_CREDENTIALS_EMPTY_NEW_PASSWORD, "New password can not be empty");
             }
             account.setPassword(passwordEncoder.encode(newPassword));
         }

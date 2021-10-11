@@ -20,7 +20,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("message", e.getMessage());
-        body.put("code", e.getCode());
+        body.put("code", e.getCode().toString());
         log.error("Error: {}", e.getMessage(), e);
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
