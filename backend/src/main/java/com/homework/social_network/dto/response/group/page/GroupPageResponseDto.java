@@ -1,5 +1,6 @@
 package com.homework.social_network.dto.response.group.page;
 
+import com.homework.social_network.dto.response.account.AccountGroupOwnerResponseDto;
 import lombok.Data;
 
 import java.util.UUID;
@@ -14,4 +15,5 @@ public class GroupPageResponseDto {
     private String subTheme;
     private String description;
     private String photoName;
+    private AccountGroupOwnerResponseDto owner;
 }
