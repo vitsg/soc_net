@@ -1,7 +1,9 @@
 package com.homework.social_network.service.request;
 
 import com.homework.social_network.entity.GroupJoin;
+import com.homework.social_network.enums.ErrorCode;
 import com.homework.social_network.enums.GroupRelationStatus;
+import com.homework.social_network.exception.CustomException;
 import com.homework.social_network.repo.GroupRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ public class GroupRequestService {
 
     @Transactional
     public GroupRelationStatus joinGroup(UUID currentAccountId, UUID targetGroupId, GroupRelationStatus status) {
+        if (groupRequestRepository.findByOwnerAccountIdAndTargetGroupId(currentAccountId, targetGroupId) != null) {
+            throw new CustomException(ErrorCode.GROUP_REQUEST_ALREADY_EXISTS);
+        }
         GroupJoin groupJoin = new GroupJoin();
         groupJoin.setOwnerAccountId(currentAccountId);
         groupJoin.setTargetGroupId(targetGroupId);
@@ -34,6 +39,9 @@ public class GroupRequestService {
     public GroupRelationStatus leaveGroup(UUID targetId) {
         UUID currentUserId = getCurrentAccountId();
         GroupJoin groupJoin = groupRequestRepository.findByOwnerAccountIdAndTargetGroupId(currentUserId, targetId);
+        if (groupJoin == null) {
+            throw new CustomException(ErrorCode.GROUP_REQUEST_DOES_NOT_EXISTS);
+        }
         groupRequestRepository.delete(groupJoin);
         return GroupRelationStatus.NONE;
     }
