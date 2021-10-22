@@ -273,7 +273,7 @@ public class AccountService {
         }
 
         if (StringUtils.isNotEmpty(oldPassword)) {
-            if (passwordEncoder.matches(account.getPassword(), oldPassword)) {
+            if (!passwordEncoder.matches(oldPassword, account.getPassword())) {
                 throw new CustomException(ErrorCode.CHANGE_CREDENTIALS_INCORRECT_OLD_PASSWORD, "Incorrect old password");
             }
             if (StringUtils.isEmpty(newPassword)) {
