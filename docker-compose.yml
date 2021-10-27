@@ -2,6 +2,7 @@ version: "3"
 services:
   db:
     image: postgres:10
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
@@ -11,6 +12,7 @@ services:
 
   backend:
     image: backend:v1
+    restart: always
     ports:
       - "8080:8080"
     depends_on:
@@ -18,6 +20,7 @@ services:
 
   frontend:
     image: frontend:v1
+    restart: always
     ports:
       - "80:80"
     depends_on:
