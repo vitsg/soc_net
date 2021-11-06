@@ -266,6 +266,9 @@ public class AccountService {
                 .filter(StringUtils::isNotEmpty)
                 .orElseThrow(() -> new CustomException(ErrorCode.CHANGE_CREDENTIALS_EMPTY_NEW_EMAIL_REJECT, "Email can not be empty"));
         if (!account.getEmail().equals(newEmail)) {
+            if (!passwordEncoder.matches(changeCredentialsRequestDto.getPasswordForEmailChange(), account.getPassword())) {
+                throw new CustomException(ErrorCode.CHANGE_EMAIL_INCORRECT_PASSWORD, "Incorrect password");
+            }
             if (accountRepository.findByEmail(newEmail) != null) {
                 throw new CustomException(ErrorCode.CHANGE_CREDENTIALS_EMAIL_IS_EXISTS, "Email already exists");
             }

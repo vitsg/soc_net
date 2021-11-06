@@ -15,6 +15,7 @@ public class ChangeCredentialsRequestDto {
 
     private UUID accountId;
     private String email;
+    private String passwordForEmailChange;
     private String oldPassword;
     private String newPassword;
 }
