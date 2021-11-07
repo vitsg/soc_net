@@ -1,5 +1,6 @@
 package com.homework.social_network.service;
 
+import com.homework.social_network.dto.request.AccountRegistrationRequestDto;
 import com.homework.social_network.dto.response.account.page.AccountPageResponseDto;
 import com.homework.social_network.dto.response.CurrentStatusDto;
 import com.homework.social_network.entity.Account;
@@ -30,6 +31,17 @@ public class AuthService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Transactional
+    public Account findByEmailForRememberMe(String email) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            AccountRegistrationRequestDto errorAccount = new AccountRegistrationRequestDto();
+            errorAccount.setPassword("___");
+            return modelMapper.map(errorAccount, Account.class);
+        }
+        return account;
+    }
 
     @Transactional
     public Account findByEmail(String email) {

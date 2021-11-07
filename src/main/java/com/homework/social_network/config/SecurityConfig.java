@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
                 .and()
                 .rememberMe().rememberMeParameter("rememberMe").tokenValiditySeconds(86400 * 365).key("socialNetwork")
-                .rememberMeCookieName("socialNetwork");
+                .rememberMeCookieName("socialNetwork").userDetailsService(authService::findByEmailForRememberMe);
     }
 
     @Bean
