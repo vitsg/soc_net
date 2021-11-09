@@ -1,6 +1,5 @@
 package com.homework.social_network.controller;
 
-import com.homework.social_network.dto.response.PhotoResponseDto;
 import com.homework.social_network.dto.response.PhotosResponseDto;
 import com.homework.social_network.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;

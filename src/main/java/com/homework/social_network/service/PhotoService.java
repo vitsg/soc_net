@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.homework.social_network.utils.Utils.validatePhotosSize;
+
 @Service
 @Slf4j
 public class PhotoService {
@@ -26,10 +28,9 @@ public class PhotoService {
     @Transactional
     public void addPhotos(UUID id, List<MultipartFile> photos) {
         if (photos == null) {
-            log.info("List of photos is null");
             return;
         }
-        log.info("Photos size is {}", photos.size());
+        validatePhotosSize(photos);
         photos.forEach(p -> {
             try {
                 Photo photo = new Photo();

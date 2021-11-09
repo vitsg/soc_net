@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 
 import static com.homework.social_network.utils.Utils.getCurrentAccount;
 import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
+import static com.homework.social_network.utils.Utils.validatePhotoSize;
 
 @Service
 @Slf4j
@@ -129,6 +130,7 @@ public class GroupService {
     }
 
     private void addOrChangePhoto(MultipartFile photoFile, Group group) {
+        validatePhotoSize(photoFile);
         try {
             Photo forRemove = group.getPhoto();
             Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
