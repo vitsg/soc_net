@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 
 public class Utils {
 
-    private static final long MAX_PHOTO_SIZE = 1024 * 1024;
+    private static final long MAX_PHOTO_SIZE = 1024 * 1024 * 10;
 
     public static byte[] getDefaultImage() {
         try {
