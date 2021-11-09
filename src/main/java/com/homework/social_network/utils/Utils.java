@@ -55,7 +55,7 @@ public class Utils {
     }
 
     public static void validatePhotoSize(MultipartFile file) {
-        if (file == null || file.getSize() == 0) {
+        if (file == null) {
             return;
         }
         if (file.getSize() > MAX_PHOTO_SIZE) {
