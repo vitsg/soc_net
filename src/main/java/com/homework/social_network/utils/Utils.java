@@ -55,6 +55,9 @@ public class Utils {
     }
 
     public static void validatePhotoSize(MultipartFile file) {
+        if (file == null || file.getSize() == 0) {
+            return;
+        }
         if (file.getSize() > MAX_PHOTO_SIZE) {
             throw new CustomException(ErrorCode.PHOTO_SIZE_OVERFLOW);
         }

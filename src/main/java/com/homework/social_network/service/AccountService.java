@@ -124,6 +124,7 @@ public class AccountService {
     @Transactional
     public AccountPageInfoResponseDto changePhoto(UUID id, PhotoRequestDto photoRequestDto) {
         MultipartFile photoFile = photoRequestDto.getPhoto();
+        validatePhotoSize(photoFile);
         Account account = accountRepository.getById(id);
         if (photoFile == null || photoFile.getSize() == 0) {
             removePhoto(account);
@@ -135,7 +136,6 @@ public class AccountService {
     }
 
     private void addOrChangePhoto(MultipartFile photoFile, Account account) {
-        validatePhotoSize(photoFile);
         try {
             Photo forRemove = account.getPhoto();
             Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));

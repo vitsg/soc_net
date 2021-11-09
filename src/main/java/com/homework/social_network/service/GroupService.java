@@ -62,6 +62,7 @@ public class GroupService {
 
     @Transactional
     public GroupWithPhotoPageResponseDto create(GroupCreateRequestDto groupCreateRequestDto) {
+        validatePhotoSize(groupCreateRequestDto.getPhoto());
         Account currentAccount = getCurrentAccount();
         Group group = modelMapper.map(groupCreateRequestDto, Group.class);
         group.setCreateDate(LocalDateTime.now());
@@ -89,6 +90,7 @@ public class GroupService {
 
     @Transactional
     public GroupWithPhotoPageResponseDto update(GroupUpdateRequestDto groupUpdateRequestDto) {
+        validatePhotoSize(groupUpdateRequestDto.getPhoto());
         Group group = groupRepository.getByIdWithPhoto(groupUpdateRequestDto.getId());
         modelMapper.map(groupUpdateRequestDto, group);
         setPhoto(group, groupUpdateRequestDto.getPhoto());
@@ -130,7 +132,6 @@ public class GroupService {
     }
 
     private void addOrChangePhoto(MultipartFile photoFile, Group group) {
-        validatePhotoSize(photoFile);
         try {
             Photo forRemove = group.getPhoto();
             Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
