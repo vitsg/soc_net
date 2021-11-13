@@ -2,8 +2,6 @@ package com.homework.social_network.utils;
 
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.Photo;
-import com.homework.social_network.enums.ErrorCode;
-import com.homework.social_network.exception.CustomException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +17,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,7 +26,6 @@ public class Utils {
 
     public static final int PORTRET_IMAGE_SIZE = 370;
     public static final int OTHER_IMAGE_SIZE = 1300;
-    private static final long MAX_PHOTO_SIZE = 1024 * 1024 * 2;
 
     public static byte[] getDefaultImage() {
         try {
@@ -60,21 +55,6 @@ public class Utils {
 
     public static LocalDateTime getCurrentDateTime() {
         return OffsetDateTime.now(ZoneOffset.UTC).toLocalDateTime();
-    }
-
-    public static void validatePhotoSize(MultipartFile file) {
-        if (file == null) {
-            return;
-        }
-        if (file.getSize() > MAX_PHOTO_SIZE) {
-            throw new CustomException(ErrorCode.PHOTO_SIZE_OVERFLOW);
-        }
-    }
-
-    public static void validatePhotosSize(List<MultipartFile> files) {
-        Optional.ofNullable(files)
-                .orElse(Collections.emptyList())
-                .forEach(Utils::validatePhotoSize);
     }
 
     public static byte[] getImageContent(MultipartFile image, int compressImageSize) {
