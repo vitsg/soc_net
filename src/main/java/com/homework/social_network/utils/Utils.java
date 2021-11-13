@@ -1,5 +1,7 @@
 package com.homework.social_network.utils;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.Photo;
 import org.apache.commons.io.FilenameUtils;
@@ -17,6 +19,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -93,8 +96,41 @@ public class Utils {
     }
 
     private static BufferedImage getBufferedImage(MultipartFile file) {
-        try (InputStream is = file.getInputStream()) {
-            return ImageIO.read(is);
+        try {
+            Scalr.Rotation rotation;
+            try (InputStream is = file.getInputStream()) {
+                rotation = Optional.ofNullable(ImageMetadataReader.readMetadata(is))
+                        .map(m -> m.getFirstDirectoryOfType(ExifIFD0Directory.class))
+                        .map(d -> {
+                            try {
+                                return d.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+                            } catch (Exception e) {
+                                return null;
+                            }
+                        })
+                        .map(orientation -> {
+                            switch (orientation) {
+                                case 6:
+                                    return Scalr.Rotation.CW_90;
+                                case 3:
+                                    return Scalr.Rotation.CW_180;
+                                case 8:
+                                    return Scalr.Rotation.CW_270;
+                                case 1:
+                                default:
+                                    return null;
+                            }
+                        })
+                        .orElse(null);
+            }
+
+            try (InputStream is = file.getInputStream()) {
+                BufferedImage bi = ImageIO.read(is);
+                if (Objects.nonNull(rotation)) {
+                    return Scalr.rotate(bi, rotation);
+                }
+                return bi;
+            }
         } catch (Exception e) {
             throw new RuntimeException("Failed to get BufferedImage " + file.getOriginalFilename());
         }
