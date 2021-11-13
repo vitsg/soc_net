@@ -25,6 +25,7 @@ import com.homework.social_network.service.notification.NotificationService;
 import com.homework.social_network.service.relation.AccountRelationService;
 import com.homework.social_network.specification.account.AllAccountSpecificationHepler;
 import com.homework.social_network.utils.CustomPageable;
+import com.homework.social_network.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -47,10 +48,10 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.homework.social_network.utils.Utils.PORTRET_IMAGE_SIZE;
 import static com.homework.social_network.utils.Utils.getCurrentAccount;
 import static com.homework.social_network.utils.Utils.getCurrentAccountId;
 import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
-import static com.homework.social_network.utils.Utils.validatePhotoSize;
 
 @Service
 @Slf4j
@@ -124,7 +125,6 @@ public class AccountService {
     @Transactional
     public AccountPageInfoResponseDto changePhoto(UUID id, PhotoRequestDto photoRequestDto) {
         MultipartFile photoFile = photoRequestDto.getPhoto();
-        validatePhotoSize(photoFile);
         Account account = accountRepository.getById(id);
         if (photoFile == null || photoFile.getSize() == 0) {
             removePhoto(account);
@@ -136,19 +136,14 @@ public class AccountService {
     }
 
     private void addOrChangePhoto(MultipartFile photoFile, Account account) {
-        try {
-            Photo forRemove = account.getPhoto();
-            Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
-            Photo photo = new Photo();
-            photo.setOwnerId(account.getId());
-            photo.setMain(true);
-            photo.setData(photoFile.getBytes());
-            photo.setCreateDate(LocalDateTime.now());
-            account.setPhoto(photo);
-        } catch (Exception e) {
-            log.error("Error by set photo", e);
-            throw new RuntimeException("Error by set photo", e);
-        }
+        Photo forRemove = account.getPhoto();
+        Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
+        Photo photo = new Photo();
+        photo.setOwnerId(account.getId());
+        photo.setMain(true);
+        photo.setData(Utils.getImageContent(photoFile, PORTRET_IMAGE_SIZE));
+        photo.setCreateDate(LocalDateTime.now());
+        account.setPhoto(photo);
     }
 
     private void removePhoto(Account account) {

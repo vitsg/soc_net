@@ -2,13 +2,13 @@ package com.homework.social_network.service;
 
 import com.homework.social_network.dto.request.GroupCreateRequestDto;
 import com.homework.social_network.dto.request.GroupUpdateRequestDto;
+import com.homework.social_network.dto.response.group.GroupWithPhotoPageResponseDto;
 import com.homework.social_network.dto.response.group.access.GroupAccessResponseDto;
+import com.homework.social_network.dto.response.group.info.GroupMetainfoResponseDto;
 import com.homework.social_network.dto.response.group.list.GroupEntryResponseDto;
 import com.homework.social_network.dto.response.group.list.GroupSimpleResponseDto;
-import com.homework.social_network.dto.response.group.page.GroupPageInfoResponseDto;
-import com.homework.social_network.dto.response.group.info.GroupMetainfoResponseDto;
-import com.homework.social_network.dto.response.group.GroupWithPhotoPageResponseDto;
 import com.homework.social_network.dto.response.group.list.GroupsResponseDto;
+import com.homework.social_network.dto.response.group.page.GroupPageInfoResponseDto;
 import com.homework.social_network.entity.Account;
 import com.homework.social_network.entity.BaseEntity;
 import com.homework.social_network.entity.Group;
@@ -20,6 +20,7 @@ import com.homework.social_network.service.relation.GroupRelationService;
 import com.homework.social_network.service.request.GroupRequestService;
 import com.homework.social_network.specification.group.AllGroupSpecificationHepler;
 import com.homework.social_network.utils.CustomPageable;
+import com.homework.social_network.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,9 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.homework.social_network.utils.Utils.PORTRET_IMAGE_SIZE;
 import static com.homework.social_network.utils.Utils.getCurrentAccount;
 import static com.homework.social_network.utils.Utils.getOrDefaultContentPhoto;
-import static com.homework.social_network.utils.Utils.validatePhotoSize;
 
 @Service
 @Slf4j
@@ -62,7 +63,6 @@ public class GroupService {
 
     @Transactional
     public GroupWithPhotoPageResponseDto create(GroupCreateRequestDto groupCreateRequestDto) {
-        validatePhotoSize(groupCreateRequestDto.getPhoto());
         Account currentAccount = getCurrentAccount();
         Group group = modelMapper.map(groupCreateRequestDto, Group.class);
         group.setCreateDate(LocalDateTime.now());
@@ -90,7 +90,6 @@ public class GroupService {
 
     @Transactional
     public GroupWithPhotoPageResponseDto update(GroupUpdateRequestDto groupUpdateRequestDto) {
-        validatePhotoSize(groupUpdateRequestDto.getPhoto());
         Group group = groupRepository.getByIdWithPhoto(groupUpdateRequestDto.getId());
         modelMapper.map(groupUpdateRequestDto, group);
         setPhoto(group, groupUpdateRequestDto.getPhoto());
@@ -132,19 +131,14 @@ public class GroupService {
     }
 
     private void addOrChangePhoto(MultipartFile photoFile, Group group) {
-        try {
-            Photo forRemove = group.getPhoto();
-            Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
-            Photo photo = new Photo();
-            photo.setOwnerId(group.getId());
-            photo.setMain(true);
-            photo.setData(photoFile.getBytes());
-            photo.setCreateDate(LocalDateTime.now());
-            group.setPhoto(photo);
-        } catch (Exception e) {
-            log.error("Error by set photo", e);
-            throw new RuntimeException("Error by set photo", e);
-        }
+        Photo forRemove = group.getPhoto();
+        Optional.ofNullable(forRemove).ifPresent(p -> photoRepository.delete(p));
+        Photo photo = new Photo();
+        photo.setOwnerId(group.getId());
+        photo.setMain(true);
+        photo.setData(Utils.getImageContent(photoFile, PORTRET_IMAGE_SIZE));
+        photo.setCreateDate(LocalDateTime.now());
+        group.setPhoto(photo);
     }
 
     private void removePhoto(Group group) {

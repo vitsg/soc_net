@@ -4,6 +4,7 @@ import com.homework.social_network.dto.response.PhotoResponseDto;
 import com.homework.social_network.dto.response.PhotosResponseDto;
 import com.homework.social_network.entity.Photo;
 import com.homework.social_network.repo.PhotoRepository;
+import com.homework.social_network.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.homework.social_network.utils.Utils.validatePhotosSize;
+import static com.homework.social_network.utils.Utils.OTHER_IMAGE_SIZE;
 
 @Service
 @Slf4j
@@ -30,19 +31,13 @@ public class PhotoService {
         if (photos == null) {
             return;
         }
-        validatePhotosSize(photos);
         photos.forEach(p -> {
-            try {
-                Photo photo = new Photo();
-                photo.setOwnerId(id);
-                photo.setMain(false);
-                photo.setData(p.getBytes());
-                photo.setCreateDate(LocalDateTime.now());
-                photoRepository.save(photo);
-            } catch (Exception e) {
-                log.error("Error by set photo", e);
-                throw new RuntimeException("Error by set photo", e);
-            }
+            Photo photo = new Photo();
+            photo.setOwnerId(id);
+            photo.setMain(false);
+            photo.setData(Utils.getImageContent(p, OTHER_IMAGE_SIZE));
+            photo.setCreateDate(LocalDateTime.now());
+            photoRepository.save(photo);
         });
     }
 
