@@ -111,7 +111,7 @@ public class AccountService {
         if (!currentAccountId.equals(accountUpdateRequestDto.getId())) {
             throw new CustomException(ErrorCode.UPDATE_ACCOUNT_REJECT_ANOTHER_ACCOUNT, "Reject update another account");
         }
-        Account account = accountRepository.getById(accountUpdateRequestDto.getId());
+        Account account = accountRepository.getByIdForUpdate(accountUpdateRequestDto.getId());
         UUID oldPartner = account.getPartnerId();
         modelMapper.map(accountUpdateRequestDto, account);
         Account savedAccount = accountRepository.save(account);
@@ -125,7 +125,7 @@ public class AccountService {
     @Transactional
     public AccountPageInfoResponseDto changePhoto(UUID id, PhotoRequestDto photoRequestDto) {
         MultipartFile photoFile = photoRequestDto.getPhoto();
-        Account account = accountRepository.getById(id);
+        Account account = accountRepository.getByIdForUpdate(id);
         if (photoFile == null || photoFile.getSize() == 0) {
             removePhoto(account);
         } else {
@@ -258,7 +258,7 @@ public class AccountService {
         if (!currentAccountId.equals(changeCredentialsRequestDto.getAccountId())) {
             throw new CustomException(ErrorCode.CHANGE_CREDENTIALS_REJECT_ANOTHER_ACCOUNT, "Reject update another account");
         }
-        Account account = accountRepository.getById(changeCredentialsRequestDto.getAccountId());
+        Account account = accountRepository.getByIdForUpdate(changeCredentialsRequestDto.getAccountId());
         String newEmail = Optional.ofNullable(changeCredentialsRequestDto.getEmail())
                 .filter(StringUtils::isNotEmpty)
                 .orElseThrow(() -> new CustomException(ErrorCode.CHANGE_CREDENTIALS_EMPTY_NEW_EMAIL_REJECT, "Email can not be empty"));
